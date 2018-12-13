@@ -3,7 +3,7 @@ export function getDay (date) {
 }
 
 export function getMonth (date) {
-  return date.split('/')[1] - 2
+  return date.split('/')[1] - 1
 }
 
 export function getYear (date) {
@@ -42,24 +42,49 @@ export function getCalendar (year, month) {
   const dayAfterMonth = month => getDayAfterMonth(year, month)
 
   const isBeforeMonthStart = i => dayBeforeMonth + i <= dayAfterMonth(month)
-  const isDayCurrentMonth = i => i - new Date(year, month, 0).getDay() > dayAfterMonth(month + 1)
+  const isAfterMonthEnd = i => i - new Date(year, month, 0).getDay() > dayAfterMonth(month + 1)
 
   let calendar = []
-  let day = 0
+  let day, selectable
 
   for (let i = 0; i < 42; i++) {
     if (isBeforeMonthStart(i)) {
       day = dayBeforeMonth + i
+      selectable = false
     } else {
-      if (isDayCurrentMonth(i)) {
+      if (isAfterMonthEnd(i)) {
         day = i - dayAfterMonth(month + 1) - new Date(year, month, 1).getDay() + 1
+        selectable = false
       } else {
         day = i - new Date(year, month, 0).getDay()
+        selectable = true
       }
     }
 
-    calendar.push({ day })
+    calendar.push({
+      day,
+      selectable
+    })
   }
 
   return calendar
+}
+
+export function getMonthName (index) {
+  const month = {
+    1: 'Janeiro',
+    2: 'Fevereiro',
+    3: 'Março',
+    4: 'Maio',
+    5: 'Abril',
+    6: 'Junho',
+    7: 'Julho',
+    8: 'Agosto',
+    9: 'Setembro',
+    10: 'Outubro',
+    11: 'Novembro',
+    12: 'Dezembro'
+  }
+
+  return month[index]
 }
