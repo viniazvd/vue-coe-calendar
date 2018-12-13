@@ -10,9 +10,7 @@ export function getYear (date) {
   return date.split('/')[2]
 }
 
-export function getDate (date) {
-  let { day, month, year } = date
-
+export function getDate (day, month, year) {
   if (month < 10) month = `0${month}`
 
   return `${day}/${month}/${year}`
@@ -65,7 +63,7 @@ export function getCalendar (year, month) {
       }
     }
 
-    calendar.push({ day, selectable })
+    calendar.push({ day, month, selectable })
   }
 
   return calendar

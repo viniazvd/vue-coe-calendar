@@ -18,7 +18,8 @@
     > -->
 
     <vue-coe-datepicker
-      :current-date="date"
+      is-range
+      :date="date"
       :show="showPicker"
       @show="show => showPicker = show"
       @date-handler="v => date = v"
@@ -30,11 +31,13 @@
 import VueCoeDatepicker from './VueCoeDatepicker'
 
 export default {
+  name: 'app',
+
   components: { VueCoeDatepicker },
 
   data () {
     return {
-      date: '12/02/2018',
+      date: '',
       showPicker: false
     }
   }
