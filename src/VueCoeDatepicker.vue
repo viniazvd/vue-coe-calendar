@@ -1,22 +1,14 @@
 <template>
   <div id="app" class="vue-coe-datepicker">
-    <input
-      class="input"
-      type="text"
-      :value="date"
-      @input="v => date = v"
-      @click="showPicker = true"
-    >
-
     <div
-      v-if="showPicker"
-      v-click-outside="() => showPicker = false"
+      v-if="show"
+      v-click-outside="() => $emit('show', false)"
       class="container"
     >
       <div class="header-container">
-        <span class="monthHandler" @click="monthDay--">‹</span>
-        <span>{{ day }} de {{ getMonthName(monthDay) }}</span>
-        <span class="monthHandler" @click="monthDay++">›</span>
+        <span class="monthHandler" @click="dateHandler('<')">‹</span>
+        <span>{{ getMonthName(internalDate.date.month) }} {{ internalDate.date.year }}</span>
+        <span class="monthHandler" @click="dateHandler('>')">›</span>
       </div>
       <div class="week-container">
         <div v-for="(weekDay, index) in ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']" :key="index" class="week">
@@ -26,12 +18,9 @@
 
       <div class="day-container">
         <div v-for="(λ, index) in calendar" :key="index" class="day">
-          <button
-            :class="dayClasses(λ.selectable)"
-            @click="pickDay(λ)"
-          >
+          <span :class="dayClasses(λ)" @click="pickDay(λ)">
             {{ λ.day }}
-          </button>
+          </span>
         </div>
       </div>
     </div>
@@ -43,17 +32,15 @@
 import clickOutside from './outside'
 
 // services
-import { getDay, getMonth, getYear, getCalendar, getMonthName } from './services'
+import { getDay, getMonth, getYear, getDate, getCalendar, getMonthName } from './services'
 
 export default {
   name: 'vue-coe-datepicker',
 
   props: {
+    show: Boolean,
+    isRange: Boolean,
     date: {
-      type: String,
-      default: ''
-    },
-    currentDate: {
       type: String,
       default: () => {
         const date = new Date(2018, 1, 12)
@@ -67,9 +54,9 @@ export default {
   directives: { clickOutside },
 
   watch: {
-    day: {
+    'internalDate.date.day': {
       handler (d) {
-        this.day = d || +getDay(this.currentDate)
+        this.internalDate.date.day = d || +getDay(this.date)
       },
       immediate: true
     }
@@ -77,31 +64,70 @@ export default {
 
   data () {
     return {
-      showPicker: false,
-      day: null,
-      monthDay: null,
-      year: null
+      internalDate: {
+        date: {
+          day: null,
+          month: null,
+          year: null
+        },
+        finalDate: {
+          day: null,
+          month: null,
+          year: null
+        }
+      }
     }
   },
 
   mounted () {
-    this.monthDay = +getMonth(this.currentDate)
-    this.year = +getYear(this.currentDate)
+    this.internalDate.date.month = +getMonth(this.date)
+    this.internalDate.date.year = +getYear(this.date)
   },
 
   computed: {
     calendar () {
-      return getCalendar(this.year, this.monthDay - 1)
+      return getCalendar(this.internalDate.date.year, this.internalDate.date.month - 1)
     }
   },
 
   methods: {
-    pickDay ({ selectable, day }) {
-      if (selectable) this.day = day
+    dateHandler (handler) {
+      if (handler === '<') this.internalDate.date.month--
+      if (handler === '<' && !this.internalDate.date.month) {
+        this.internalDate.date.month = 12
+        this.internalDate.date.year--
+      }
+
+      if (handler === '>') this.internalDate.date.month++
+      if (handler === '>' && this.internalDate.date.month === 13) {
+        this.internalDate.date.month = 1
+        this.internalDate.date.year++
+      }
     },
 
-    dayClasses (selectable) {
-      return [ 'value', { '--selectable': selectable } ]
+    pickDay ({ selectable, day }) {
+      if (this.isRange && !this.internalDate.finalDate.day) {
+        if (selectable) this.internalDate.date.day = day
+        this.$emit('date-handler', getDate(this.internalDate.date))
+
+        return
+      } else {
+
+      }
+
+      // isRange = false
+      if (selectable) this.internalDate.date.day = day
+      this.$emit('date-handler', getDate(this.internalDate.date))
+    },
+
+    dayClasses ({ selectable, day }) {
+      return [
+        'value',
+        {
+          '-selectable': selectable,
+          '-current-day': day === this.internalDate.date.day
+        }
+      ]
     },
 
     getMonthName
@@ -111,12 +137,6 @@ export default {
 
 <style lang="scss">
 .vue-coe-datepicker {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  & > .input {}
-
   & > .container {
     width: 250px;
     height: auto;
@@ -151,7 +171,7 @@ export default {
     & > .day-container {
       width: 100%;
       display: flex;
-      overflow: hidden;
+      margin-top: 5px;
       text-align: center;
       flex-flow: row wrap;
 
@@ -160,11 +180,30 @@ export default {
         position: relative;
         width: calc(100% / 7);
         flex: 0 calc(100% / 7);
-        padding-bottom: calc(100% / 7);
+        margin-bottom: calc(100% / 7);
 
         & > .value { color: gray; }
 
-        & > .--selectable { color: red; }
+        & > .-selectable {
+          color: red;
+
+          &:hover {
+            padding: 5px;
+            border: 1px solid black;
+          }
+        }
+
+        & > .-current-day {
+          padding: 5px;
+          color: red;
+          background-color: black;
+        }
+
+        & > .-current-day:not(.-selectable) {
+          padding: unset;
+          color: unset;
+          background-color: unset;
+        }
       }
     }
   }

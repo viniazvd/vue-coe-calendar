@@ -3,11 +3,19 @@ export function getDay (date) {
 }
 
 export function getMonth (date) {
-  return date.split('/')[1] - 1
+  return date.split('/')[1]
 }
 
 export function getYear (date) {
   return date.split('/')[2]
+}
+
+export function getDate (date) {
+  let { day, month, year } = date
+
+  if (month < 10) month = `0${month}`
+
+  return `${day}/${month}/${year}`
 }
 
 export function getDaysInMonth (date) {
@@ -17,14 +25,10 @@ export function getDaysInMonth (date) {
 function getDayBeforeMonth (year, month) {
   const date = new Date(year, month, 0)
   const day = date.getDay()
-
-  // create a new date instance because we don't want to edit the original object
   const calendarStart = new Date(date)
 
-  const coe = new Date(year, month + 1, 0).getDay()
-
   // get the difference till the first day of the week plus the offset to start the week at the given day
-  const diff = calendarStart.getDate() - day + (coe === 0 ? -7 : 0)
+  const diff = calendarStart.getDate() - day
   calendarStart.setDate(diff)
 
   // in case the start date is further then the start of the month, set back with a week.
@@ -61,10 +65,7 @@ export function getCalendar (year, month) {
       }
     }
 
-    calendar.push({
-      day,
-      selectable
-    })
+    calendar.push({ day, selectable })
   }
 
   return calendar
