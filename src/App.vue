@@ -3,8 +3,7 @@
     <input
       class="input"
       type="text"
-      :value="date"
-      @input="v => date = v"
+      v-model="date"
       @click="showPicker = true"
     >
 
@@ -28,7 +27,7 @@
 </template>
 
 <script>
-import VueCoeDatepicker from './VueCoeDatepicker'
+import VueCoeDatepicker from './Index'
 
 export default {
   name: 'app',
