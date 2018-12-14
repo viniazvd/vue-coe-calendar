@@ -35,7 +35,7 @@
 import clickOutside from './outside'
 
 // services
-import { getDay, getMonth, getYear, getDate, getCalendar, getMonthName } from './services'
+import { getDay, getMonth, getYear, getFormattedDate, getDate, getCalendar, getMonthName } from './services'
 
 export default {
   name: 'vue-coe-datepicker',
@@ -119,13 +119,13 @@ export default {
 
           this.internalDate = {
             start: this.internalDate.start,
-            end: getDate(day, this.month, this.year)
+            end: getFormattedDate(day, this.month, this.year)
           }
         } else if (!this.day) {
           this.day = day
 
           this.internalDate = {
-            start: getDate(this.day, this.month, this.year),
+            start: getFormattedDate(this.day, this.month, this.year),
             end: null
           }
         } else {
@@ -133,12 +133,12 @@ export default {
 
           this.internalDate = {
             start: this.internalDate.start,
-            end: getDate(day, this.month, this.year)
+            end: getFormattedDate(day, this.month, this.year)
           }
         }
       } else {
         this.day = day
-        this.internalDate = getDate(this.day, this.month, this.year)
+        this.internalDate = getFormattedDate(this.day, this.month, this.year)
       }
     },
 
@@ -158,13 +158,14 @@ export default {
 
     getCurrentDay (day, month) {
       if (!this.internalDate) return false
-      if (!this.isRange) return day === this.day && (month + 1) === this.initMonth
       if (!this.internalDate.start || !this.internalDate.end) return false
+      if (!this.isRange) return day === this.day && (month + 1) === this.initMonth
 
-      const startDate = new Date(getYear(this.internalDate.start), (getMonth(this.internalDate.start) - 1), getDay(this.internalDate.start)).getTime()
-      const finalDate = new Date(getYear(this.internalDate.end), (getMonth(this.internalDate.end) - 1), getDay(this.internalDate.end)).getTime()
+      const startDate = getDate(this.internalDate.start)
+      const finalDate = getDate(this.internalDate.end)
+      const loopDate = +new Date(this.year, (this.month - 1), day)
 
-      return startDate > finalDate
+      return (loopDate >= startDate && loopDate <= finalDate) || (loopDate <= startDate && loopDate >= finalDate)
     },
 
     dayClasses ({ selectable, day, month }) {

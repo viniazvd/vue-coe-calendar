@@ -10,10 +10,14 @@ export function getYear (date) {
   return date.split('/')[2]
 }
 
-export function getDate (day, month, year) {
+export function getFormattedDate (day, month, year) {
   if (month < 10) month = `0${month}`
 
   return `${day}/${month}/${year}`
+}
+
+export function getDate (date) {
+  return +new Date(getYear(date), (getMonth(date) - 1), getDay(date))
 }
 
 export function getDaysInMonth (date) {
