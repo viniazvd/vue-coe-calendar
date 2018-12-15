@@ -1,34 +1,32 @@
 <template>
-  <div id="app" class="vue-coe-datepicker">
-    <div v-if="show" v-click-outside="close" class="container">
-      <div v-if="!showMonths && !showYears" class="container-calendar">
-        <coe-reset @reset-date="resetDate" />
+  <div id="app" v-if="show" v-click-outside="close" class="vue-coe-datepicker">
+    <div v-if="!showMonths && !showYears" class="container-calendar">
+      <coe-reset @reset-date="resetDate" />
 
-        <coe-header
-          :month="getMonthName(month)"
-          :year="year"
-          @show-months="showMonths = !showMonths"
-          @show-years="showYears = !showYears"
-          @date-handler="dateHandler"
-        />
-
-        <coe-week />
-
-        <coe-day v-bind="$attrs" :calendar="calendar" @pick-day="pickDay" />
-      </div>
-
-      <coe-selections
-        v-else
-        :show-months="showMonths"
-        :show-years="showYears"
-        :month="month"
+      <coe-header
+        :month="getMonthName(month)"
         :year="year"
-        @set-month="month = $event; showMonths = false"
-        @set-year="year = $event; showYears = false"
+        @show-months="showMonths = !showMonths"
+        @show-years="showYears = !showYears"
+        @date-handler="dateHandler"
       />
+
+      <coe-week />
+
+      <coe-day v-bind="$attrs" :calendar="calendar" @pick-day="pickDay" />
+
+      <button class="apply" @click="apply">APLICAR</button>
     </div>
 
-    <button v-if="show && !showMonths && !showYears " class="apply" @click="$emit('date-handler', internalDate)">APLICAR</button>
+    <coe-selections
+      v-else
+      :show-months="showMonths"
+      :show-years="showYears"
+      :month="month"
+      :year="year"
+      @set-month="month = $event; showMonths = false"
+      @set-year="year = $event; showYears = false"
+    />
   </div>
 </template>
 
@@ -182,6 +180,12 @@ export default {
       }
     },
 
+    apply () {
+      if (this.internalDate.length || Object.keys(this.internalDate).length) {
+        this.$emit('date-handler', this.internalDate)
+      }
+    },
+
     getMonthName (index) {
       return months[index]
     },
@@ -206,16 +210,16 @@ export default {
 
 <style lang="scss">
 .vue-coe-datepicker {
-  & > .container {
-    width: 250px;
-    height: auto;
-    margin-top: 10px;
-    border: 1px solid gray;
+  width: 250px;
+  height: auto;
+  margin-top: 10px;
+  position: relative;
+  border: 1px solid gray;
 
-    & > .container-calendar > .apply{
-      margin: 0 auto;
-      display: flex;
-    }
+  & > .container-calendar > .apply {
+    right: -1px;
+    width: 252px;
+    position: absolute;
   }
 }
 </style>
