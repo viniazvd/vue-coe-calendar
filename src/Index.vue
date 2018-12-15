@@ -35,7 +35,8 @@
 import clickOutside from './support/directives/outside'
 
 // services
-import { getDay, getMonth, getYear, getDate, getFormattedDate, getCalendar, months } from './support/services'
+import { getDay, getMonth, getYear, getDate, getFormattedDate, months } from './support/services'
+import { getCalendar } from './support/services/calendar'
 // import { rangeOption } from './support/services/pickDay'
 
 // components
