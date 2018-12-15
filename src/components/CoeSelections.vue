@@ -40,7 +40,7 @@ export default {
 
   mounted () {
     if (this.$refs.year && this.$refs.year[0]) {
-      this.$el.scrollTop = this.$refs.year[0].offsetTop - this.$refs.year[0].offsetWidth + 48
+      this.$el.scrollTop = this.$refs.year[0].offsetTop - this.$refs.year[0].offsetWidth + 88
     }
   },
 
