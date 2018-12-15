@@ -1,16 +1,30 @@
-<template>
-  <div class="day-container">
-    <div v-for="(λ, index) in calendar" :key="index" class="day">
-      <span :class="dayClasses(λ)" @click="$emit('pick-day', λ)">
-        {{ λ.day }}
-      </span>
-    </div>
-  </div>
-</template>
-
 <script>
+
+// <template>
+//   <div class="day-container">
+//     <div v-for="(λ, index) in calendar" :key="index" class="day">
+//       <span :class="dayClasses(λ)" @click="$emit('pick-day', λ)">
+//         {{ λ.day }}
+//       </span>
+//     </div>
+//   </div>
+// </template>
+
+function dayClasses (showDisabledDays, { selectable, day, month, inRange, clicked }) {
+  return [
+    'value',
+    {
+      '-selectable': selectable,
+      '-in-range': (inRange || clicked) && selectable,
+      '-hide': showDisabledDays && !selectable
+    }
+  ]
+}
+
 export default {
   name: 'coe-day',
+
+  functional: true,
 
   props: {
     calendar: {
@@ -23,17 +37,19 @@ export default {
     showDisabledDays: Boolean
   },
 
-  methods: {
-    dayClasses ({ selectable, day, month, inRange, clicked }) {
-      return [
-        'value',
-        {
-          '-selectable': selectable,
-          '-in-range': inRange || clicked,
-          '-hide': this.showDisabledDays && !selectable
-        }
-      ]
-    }
+  render (h, { props, listeners }) {
+    const days = props.calendar.map((λ, index) => {
+      return [ h('div', { attrs: { class: 'day' } }, [
+        h('span', {
+          class: dayClasses(props.showDisabledDays, λ),
+          on: { click: () => listeners['pick-day'](λ) }
+        }, λ.day)
+      ]) ]
+    })
+
+    return h('div', {
+      attrs: { class: 'day-container' }
+    }, [ days ])
   }
 }
 </script>
