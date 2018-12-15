@@ -1,16 +1,35 @@
 <template>
   <div id="app" class="vue-coe-datepicker">
-    <div v-if="show" v-click-outside="() => $emit('show', false)" class="container">
-      <coe-reset @reset-date="resetDate" />
+    <div v-if="show" v-click-outside="close" class="container">
+      <div v-if="!showMonths && !showYears" class="container-calendar">
+        <coe-reset @reset-date="resetDate" />
 
-      <coe-header @date-handler="dateHandler" :month="getMonthName(month)" :year="year" />
+        <coe-header
+          :month="getMonthName(month)"
+          :year="year"
+          @show-months="showMonths = !showMonths"
+          @show-years="showYears = !showYears"
+          @date-handler="dateHandler"
+        />
 
-      <coe-week />
+        <coe-week />
 
-      <coe-day :calendar="calendar" @pick-day="pickDay" />
+        <coe-day :calendar="calendar" @pick-day="pickDay" />
+      </div>
+
+      <coe-selections
+        v-else
+        :show-months="showMonths"
+        :show-years="showYears"
+        :month="month"
+        :year="year"
+        @set-year="year = $event"
+        @set-month="month = $event"
+        @close="showMonths = false; showYears = false"
+      />
     </div>
 
-    <button v-if="show" class="apply" @click="$emit('date-handler', internalDate)">APLICAR</button>
+    <button v-if="show && !showMonths && !showYears " class="apply" @click="$emit('date-handler', internalDate)">APLICAR</button>
   </div>
 </template>
 
@@ -27,6 +46,7 @@ import CoeReset from './components/CoeReset'
 import CoeHeader from './components/CoeHeader'
 import CoeWeek from './components/CoeWeek'
 import CoeDay from './components/CoeDay'
+import CoeSelections from './components/CoeSelections'
 
 // mixins
 // import pickDay from './support/mixins/pickDay'
@@ -34,7 +54,7 @@ import CoeDay from './components/CoeDay'
 export default {
   name: 'vue-coe-datepicker',
 
-  components: { CoeReset, CoeHeader, CoeWeek, CoeDay },
+  components: { CoeReset, CoeHeader, CoeWeek, CoeDay, CoeSelections },
 
   // mixins: [ pickDay ],
 
@@ -55,7 +75,9 @@ export default {
       day: null,
       finalDay: null,
       month: null,
-      year: null
+      year: null,
+      showMonths: false,
+      showYears: false
     }
   },
 
@@ -166,6 +188,10 @@ export default {
       }
     },
 
+    getMonthName (index) {
+      return months[index]
+    },
+
     resetDate () {
       this.day = null
       this.finalDay = null
@@ -174,8 +200,11 @@ export default {
       this.$emit('date-handler', '')
     },
 
-    getMonthName (index) {
-      return months[index]
+    close () {
+      this.showMonths = false
+      this.showYears = false
+
+      this.$emit('show', false)
     }
   }
 }
@@ -188,6 +217,11 @@ export default {
     height: auto;
     margin-top: 10px;
     border: 1px solid gray;
+
+    & > .container-calendar > .apply{
+      margin: 0 auto;
+      display: flex;
+    }
   }
 }
 </style>

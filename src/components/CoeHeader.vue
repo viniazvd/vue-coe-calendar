@@ -1,7 +1,10 @@
 <template>
   <div class="header-container">
     <span class="monthHandler" @click="$emit('date-handler', '<')">‹</span>
-    <span>{{ month }} {{ year }}</span>
+    <div class="date-preview">
+      <span @click="$emit('show-months')">{{ month }}</span>
+      <span @click="$emit('show-years')">{{ year }}</span>
+    </div>
     <span class="monthHandler" @click="$emit('date-handler', '>')">›</span>
   </div>
 </template>
@@ -49,5 +52,11 @@ export default {
   justify-content: space-between;
 
   & > .monthHandler { cursor: pointer; }
+
+  & > .date-preview {
+    cursor: pointer;
+
+    & :first-child { padding-right: 10px; }
+  }
 }
 </style>
