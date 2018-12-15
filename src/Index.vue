@@ -16,7 +16,7 @@
 
 <script>
 // directive
-import clickOutside from './outside'
+import clickOutside from './support/directives/outside'
 
 // services
 import { getDay, getMonth, getYear, getFormattedDate, getCalendar, months } from './support/services'
