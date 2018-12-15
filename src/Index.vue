@@ -14,7 +14,7 @@
 
         <coe-week />
 
-        <coe-day :calendar="calendar" @pick-day="pickDay" />
+        <coe-day v-bind="$attrs" :calendar="calendar" @pick-day="pickDay" />
       </div>
 
       <coe-selections
@@ -23,9 +23,8 @@
         :show-years="showYears"
         :month="month"
         :year="year"
-        @set-year="year = $event"
-        @set-month="month = $event"
-        @close="showMonths = false; showYears = false"
+        @set-month="month = $event; showMonths = false"
+        @set-year="year = $event; showYears = false"
       />
     </div>
 
@@ -48,15 +47,10 @@ import CoeWeek from './components/CoeWeek'
 import CoeDay from './components/CoeDay'
 import CoeSelections from './components/CoeSelections'
 
-// mixins
-// import pickDay from './support/mixins/pickDay'
-
 export default {
   name: 'vue-coe-datepicker',
 
   components: { CoeReset, CoeHeader, CoeWeek, CoeDay, CoeSelections },
-
-  // mixins: [ pickDay ],
 
   props: {
     show: Boolean,

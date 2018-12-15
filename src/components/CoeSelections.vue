@@ -1,28 +1,27 @@
 <template>
   <div class="options-selection">
-    <select
-      v-if="showMonths"
-      :value="month"
-      @input="month => $emit('set-month', +month.target.value)"
-      @change="$emit('close')"
-    >
-      <option disabled value="">Escolha um mês</option>
-      <option v-for="(month, index) in months" :key="month" :value="+index">
-        {{ month }}
-      </option>
-    </select>
+    <div v-if="showMonths" class="months">
+      <div
+        v-for="(monthName, monthNumber) in months"
+        :key="monthNumber"
+        :class="monthClasses(monthNumber)"
+        @click="$emit('set-month', +monthNumber)"
+      >
+        <span class="value">{{ monthName }}</span>
+      </div>
+    </div>
 
-    <select
-      v-else
-      :value="year"
-      @input="year => $emit('set-year', +year.target.value)"
-      @change="$emit('close')"
-    >
-      <option disabled value="">Escolha um ano</option>
-      <option v-for="(year, index) in years" :key="index" :value="year">
-        {{ year }}
-      </option>
-    </select>
+    <div v-else class="years">
+      <div
+        v-for="(_year, index) in years"
+        :key="index"
+        :class="yearClasses(_year)"
+        :ref="_year === year ? 'year' : null"
+        @click="$emit('set-year', +_year)"
+      >
+        <span class="value">{{ _year }}</span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -39,17 +38,78 @@ export default {
     year: Number
   },
 
+  mounted () {
+    if (this.$refs.year && this.$refs.year[0]) {
+      this.$el.scrollTop = this.$refs.year[0].offsetTop - this.$refs.year[0].offsetWidth + 48
+    }
+  },
+
   computed: {
     months () {
       return months
     },
 
     years () {
-      const before = Array.from({ length: 30 }).map((year, index) => this.year + index)
+      const before = Array.from({ length: 30 }).map((year, index) => (this.year + 1) + index)
       const after = Array.from({ length: 30 }).map((year, index) => this.year - index)
 
       return [ ...before, ...after ].sort((a, b) => a - b)
     }
+  },
+
+  methods: {
+    monthClasses (month) {
+      return [ 'month', { '-selected': +month === this.month } ]
+    },
+
+    yearClasses (year) {
+      return [ 'year', { '-selected': +year === this.year } ]
+    }
   }
 }
 </script>
+
+<style lang="scss">
+.options-selection {
+  max-height: 317px;
+  overflow-x: hidden;
+
+  & > .months {
+    display: flex;
+    flex-direction: column;
+
+    & > .month {
+      width: 100%;
+      text-align: center;
+      padding: { top: 5px; bottom: 5px; }
+
+      & > .value {}
+
+      &:hover { background-color: gray; }
+    }
+
+    & .-selected { background-color: red; }
+
+    & :first-child { padding-top: 9px; }
+  }
+
+  & > .years {
+    display: flex;
+    flex-direction: column;
+
+    & > .year {
+      width: 100%;
+      text-align: center;
+      padding: { top: 5px; bottom: 5px; }
+
+      & > .value {}
+
+      &:hover { background-color: gray; }
+    }
+
+    & .-selected { background-color: red; }
+
+    & :first-child { padding-top: 9px; }
+  }
+}
+</style>

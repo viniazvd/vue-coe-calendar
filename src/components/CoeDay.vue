@@ -19,7 +19,8 @@ export default {
       validator (c) {
         return c.length === 42
       }
-    }
+    },
+    showDisabledDays: Boolean
   },
 
   methods: {
@@ -28,7 +29,8 @@ export default {
         'value',
         {
           '-selectable': selectable,
-          '-in-range': inRange || clicked
+          '-in-range': inRange || clicked,
+          '-hide': this.showDisabledDays && !selectable
         }
       ]
     }
@@ -73,6 +75,8 @@ export default {
       color: unset;
       background-color: unset;
     }
+
+    & > .-hide { display: none; }
   }
 }
 </style>
