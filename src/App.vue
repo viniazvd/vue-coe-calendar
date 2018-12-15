@@ -17,6 +17,7 @@
     > -->
 
     <vue-coe-datepicker
+      show-disabled-days
       is-range
       :date="date"
       :show="showPicker"
