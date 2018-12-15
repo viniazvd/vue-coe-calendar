@@ -71,6 +71,7 @@ export default {
 
 <style lang="scss">
 .options-selection {
+  width: 100%;
   max-height: 317px;
   overflow-x: hidden;
 
