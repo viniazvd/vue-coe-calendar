@@ -11,20 +11,7 @@
 
 <script>
 
-const months = [
-  'Janeiro',
-  'Fevereiro',
-  'Março',
-  'Maio',
-  'Abril',
-  'Junho',
-  'Julho',
-  'Agosto',
-  'Setembro',
-  'Outubro',
-  'Novembro',
-  'Dezembro'
-]
+import { months } from '../support/services'
 
 export default {
   name: 'coe-header',
@@ -34,7 +21,7 @@ export default {
       type: String,
       required: true,
       validator (month) {
-        return months.some(m => m === month)
+        return Object.values(months).some(m => m === month)
       }
     },
     year: {
