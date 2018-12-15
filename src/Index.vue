@@ -35,7 +35,7 @@
 import clickOutside from './support/directives/outside'
 
 // services
-import { getDay, getMonth, getYear, getDate, getFormattedDate, months } from './support/services'
+import { getDay, getMonth, getYear, getFormattedDate, months } from './support/services'
 import { getCalendar } from './support/services/calendar'
 // import { rangeOption } from './support/services/pickDay'
 
@@ -64,7 +64,7 @@ export default {
 
   data () {
     return {
-      internalDate: Object.create(null),
+      internalDate: null,
       day: null,
       finalDay: null,
       month: null,
@@ -81,10 +81,20 @@ export default {
 
       const currentDate = date.toLocaleDateString('pt-BR', options)
 
+      if (this.isRange) {
+        this.internalDate = {
+          start: null,
+          end: null
+        }
+      } else {
+        this.internalDate = ''
+      }
+
       this.month = +getMonth(currentDate)
       this.year = +getYear(currentDate)
     } else {
       if (this.isRange) {
+        this.internalDate = Object.create(null)
         this.day = +getDay(this.date.start)
         this.month = +getMonth(this.date.start)
         this.year = +getYear(this.date.start)
@@ -104,7 +114,11 @@ export default {
         this.month = +getMonth(d)
         this.year = +getYear(d)
 
-        this.internalDate.start = d
+        if (this.isRange) {
+          this.internalDate.start = d
+        } else {
+          this.internalDate = d
+        }
       } else {
         this.day = null
       }
@@ -177,7 +191,7 @@ export default {
         }
       } else {
         this.day = day
-        this.internalDate = getDate(this.day, this.month, this.year)
+        this.internalDate = getFormattedDate(this.day, this.month, this.year)
       }
     },
 
