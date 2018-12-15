@@ -19,8 +19,8 @@
 import clickOutside from './support/directives/outside'
 
 // services
-import { getDay, getMonth, getYear, getFormattedDate, getCalendar, months } from './support/services'
-import { rangeOption } from './support/services/pickDay'
+import { getDay, getMonth, getYear, getDate, getFormattedDate, getCalendar, months } from './support/services'
+// import { rangeOption } from './support/services/pickDay'
 
 // components
 import CoeReset from './components/CoeReset'
@@ -123,13 +123,47 @@ export default {
       }
     },
 
+    // pickDay ({ selectable, day }) {
+    //   if (!selectable) return false
+
+    //   if (this.isRange) return rangeOption.call(this, day)
+
+    //   this.day = day
+    //   this.internalDate = getFormattedDate(this.day, this.month, this.year)
+    // },
+
     pickDay ({ selectable, day }) {
       if (!selectable) return false
 
-      if (this.isRange) return rangeOption.call(this, day)
+      if (this.isRange) {
+        if (this.internalDate && this.internalDate.start && this.internalDate.end) {
+          this.internalDate = null
+          this.day = day
+          this.finalDay = null
 
-      this.day = day
-      this.internalDate = getFormattedDate(this.day, this.month, this.year)
+          this.internalDate = {
+            start: getFormattedDate(this.day, this.month, this.year),
+            end: null
+          }
+        } else if (!this.day) {
+          this.day = day
+
+          this.internalDate = {
+            start: getFormattedDate(this.day, this.month, this.year),
+            end: null
+          }
+        } else {
+          this.finalDay = day
+
+          this.internalDate = {
+            start: this.internalDate.start,
+            end: getFormattedDate(day, this.month, this.year)
+          }
+        }
+      } else {
+        this.day = day
+        this.internalDate = getDate(this.day, this.month, this.year)
+      }
     },
 
     resetDate () {
