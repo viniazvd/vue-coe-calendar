@@ -64,7 +64,7 @@ export default {
 
   data () {
     return {
-      internalDate: null,
+      internalDate: '',
       day: null,
       finalDay: null,
       month: null,
@@ -86,8 +86,6 @@ export default {
           start: null,
           end: null
         }
-      } else {
-        this.internalDate = ''
       }
 
       this.month = +getMonth(currentDate)
