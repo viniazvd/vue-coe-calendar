@@ -1,7 +1,6 @@
 import { shallowMount } from '@vue/test-utils'
 import { getMonth, getYear } from '../src/support/services'
 import { getCalendar } from '../src/support/services/calendar'
-import { equals } from './services'
 
 import VueCoeCalendar from '../'
 
@@ -128,9 +127,8 @@ describe('Index', () => {
     const year = +getYear(currentDate)
 
     const calendar = getCalendar.call(wrapper.vm, year, month - 1)
-    const isEqual = equals(calendar, wrapper.vm.calendar)
 
-    expect(isEqual).toBe(true)
+    expect(calendar).toEqual(wrapper.vm.calendar)
   })
 
   test('passing a date', () => {
