@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils'
+import { mount, shallowMount } from '@vue/test-utils'
 
 import { getMonth, getYear } from '../src/support/services'
 import { getCalendar } from '../src/support/services/calendar'
@@ -12,7 +12,7 @@ import CoeSelections from '../src/components/CoeSelections.vue'
 import CoeWeek from '../src/components/CoeWeek.vue'
 
 /* eslint-disable */
-describe('Index', () => {
+describe('VueCoeCalendar', () => {
   test('is a Vue instance', () => {
     const wrapper = shallowMount(VueCoeCalendar, { propsData: { date: '' } })
 
@@ -185,16 +185,121 @@ describe('Index', () => {
     expect(wrapper.vm.month).toBe(12)
     expect(wrapper.vm.year).toBe(2017)
   })
-})
 
-// WIP
-test('reset date', () => {
-  const wrapper = shallowMount(VueCoeCalendar, {
-    propsData: {
-      date: '29/01/1989',
-      show: true
-    }
+  test('change month: dateHandler = "<"', () => {
+    const wrapper = mount(VueCoeCalendar, {
+      propsData: {
+        date: '29/01/1989',
+        show: true
+      }
+    })
+
+    wrapper
+      .find('.container-calendar')
+      .find('.header-container')
+      .findAll('span').at(0)
+      .trigger('click')
+
+    expect(wrapper.vm.month).toEqual(12)
   })
 
-  // wrapper.find('.reset-container').trigger('click')
+  test('change month: list', () => {
+    const wrapper = mount(VueCoeCalendar, {
+      propsData: {
+        date: '29/01/1989',
+        show: true
+      }
+    })
+
+    wrapper
+      .find('.container-calendar')
+      .find('.header-container')
+      .find('.date-preview')
+      .findAll('span').at(0)
+      .trigger('click')
+
+    wrapper
+      .find('.options-selection')
+      .find('.months')
+      .findAll('.month').at(2)
+      .trigger('click')
+
+    // expect(optionsSelection.classes()).toContain('options-selection')
+    expect(wrapper.vm.month).toEqual(3)
+  })
+
+  test('change year: list', () => {
+    const wrapper = mount(VueCoeCalendar, {
+      propsData: {
+        date: '29/01/1989',
+        show: true
+      }
+    })
+
+    wrapper
+      .find('.container-calendar')
+      .find('.header-container')
+      .find('.date-preview')
+      .findAll('span').at(1)
+      .trigger('click')
+
+    wrapper
+      .find('.options-selection')
+      .find('.years')
+      .findAll('.year').at(2)
+      .trigger('click')
+
+    expect(wrapper.vm.year).toEqual(1962)
+  })
+
+  test('reset date', () => {
+    const wrapper = mount(VueCoeCalendar, {
+      propsData: {
+        date: '29/01/1989',
+        show: true
+      }
+    })
+
+    wrapper.find('div > div > div > button').trigger('click')
+
+    expect(wrapper.vm.day).toEqual(null)
+    expect(wrapper.vm.finalDay).toEqual(null)
+    expect(wrapper.vm.internalDate).toEqual({})
+  })
+
+  test('pick day', () => {
+    const wrapper = mount(VueCoeCalendar, {
+      propsData: {
+        date: '29/01/1989',
+        show: true
+      }
+    })
+
+    wrapper
+      .find('.container-calendar')
+      .find('.day-container')
+      .findAll('div').at(15)
+      .find('span')
+      .trigger('click')
+
+    expect(wrapper.vm.day).toEqual(10)
+  })
+
+  test('pick a not selectable day', () => {
+    const wrapper = mount(VueCoeCalendar, {
+      propsData: {
+        date: '29/01/1989',
+        show: true
+      }
+    })
+
+    wrapper
+      .find('.container-calendar')
+      .find('.day-container')
+      .findAll('div').at(0)
+      .find('span')
+      .trigger('click')
+
+    expect(wrapper.vm.day).toEqual(29)
+  })
 })
