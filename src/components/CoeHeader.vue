@@ -21,15 +21,11 @@ export default {
   props: {
     month: {
       type: String,
-      required: true,
       validator (month) {
         return Object.values(months).some(m => m === month)
       }
     },
-    year: {
-      type: Number,
-      required: true
-    }
+    year: Number
   },
 
   render (h, { props, listeners }) {
