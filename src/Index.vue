@@ -166,8 +166,8 @@ export default {
 
       if (this.isRange) {
         // case:
-        // - start date already selected
-        // - date has already been selected
+        // - initial date already selected
+        // - end date already selected
         // - reset dates
         // - set initial date
         if (this.internalDate && this.internalDate.start && this.internalDate.end) {
@@ -186,7 +186,7 @@ export default {
           this.internalDate = { start: date(), end: null }
 
         // case:
-        // - start date already selected
+        // - initial date already selected
         // - set the end date
         } else {
           this.finalDay = day
