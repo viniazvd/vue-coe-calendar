@@ -1,7 +1,4 @@
 {
-  "presets": [
-    ["@vue/app", { "modules": false }]
-  ],
   "env": {
     "test": {
       "presets": [

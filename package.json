@@ -2,30 +2,38 @@
   "name": "vue-coe-datepicker",
   "version": "0.1.0",
   "private": true,
+  "cdn": "dist/vue-coe-datepicker.js",
+  "main": "dist/vue-coe-datepicker.cjs.js",
+  "unpkg": "dist/vue-coe-datepicker.js",
+  "module": "dist/vue-coe-datepicker.es.js",
+  "jsdelivr": "dist/vue-coe-datepicker.js",
+  "umd:main": "dist/vue-coe-datepicker.js",
   "scripts": {
-    "test": "NODE_ENV=test jest",
-    "serve": "poi --serve examples/main.js",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "test": "yarn build && NODE_ENV=test jest",
+    "serve": "yarn build && poi --serve examples/main.js",
+    "build": "bili"
   },
-  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.0.0-beta",
     "@vue/cli-plugin-babel": "^3.0.5",
-    "@vue/cli-plugin-eslint": "^3.0.5",
+    "@vue/cli-plugin-eslint": "^3.2.1",
     "@vue/cli-service": "^3.0.5",
     "@vue/eslint-config-standard": "^4.0.0",
     "@vue/test-utils": "^1.0.0-beta.25",
+    "autoprefixer": "^9.4.2",
     "babel-core": "^7.0.0-beta",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^23.6.0",
     "babel-preset-env": "^1.7.0",
     "babel-runtime": "^7.0.0-beta",
-    "eslint": "^5.8.0",
-    "eslint-plugin-vue": "^5.0.0-0",
+    "bili": "^3.4.2",
+    "eslint": "^5.10.0",
+    "eslint-plugin-vue": "^5.0.0",
     "jest": "^23.6.0",
     "node-sass": "^4.9.0",
     "poi": "^12.1.5",
+    "rollup-plugin-vue": "^4.3.2",
     "sass-loader": "^7.0.1",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
@@ -61,15 +69,5 @@
     "parserOptions": {
       "parser": "babel-eslint"
     }
-  },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {}
-    }
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ]
+  }
 }

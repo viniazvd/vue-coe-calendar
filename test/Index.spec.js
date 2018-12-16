@@ -3,7 +3,7 @@ import { getMonth, getYear } from '../src/support/services'
 import { getCalendar } from '../src/support/services/calendar'
 import { equals } from './services'
 
-import VueCoeCalendar from '../src/Index.vue'
+import VueCoeCalendar from '../'
 
 /* eslint-disable */
 describe('Index', () => {

@@ -12,14 +12,13 @@
       is-range
       :date="date"
       :show="isFocused"
-      @show="(status) => isFocused = status"
       @date-handler="(value) => date = value"
     />
   </div>
 </template>
 
 <script>
-import Calendar from '../src/Index.vue'
+import Calendar from '../'
 
 export default {
   components: { Calendar },
@@ -31,3 +30,5 @@ export default {
   }
 }
 </script>
+
+<style src="../dist/vue-coe-datepicker.css" />
