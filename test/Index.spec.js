@@ -1,9 +1,15 @@
 import { shallowMount } from '@vue/test-utils'
+
 import { getMonth, getYear } from '../src/support/services'
 import { getCalendar } from '../src/support/services/calendar'
 import { equals } from './services'
 
 import VueCoeCalendar from '../src/Index.vue'
+import CoeDay from '../src/components/CoeDay.vue'
+import CoeHeader from '../src/components/CoeHeader.vue'
+import CoeReset from '../src/components/CoeReset.vue'
+import CoeSelections from '../src/components/CoeSelections.vue'
+import CoeWeek from '../src/components/CoeWeek.vue'
 
 /* eslint-disable */
 describe('Index', () => {
@@ -22,6 +28,7 @@ describe('Index', () => {
     })
 
     expect(wrapper.vm.show).toBe(false)
+    expect(wrapper.isEmpty()).toBe(true)
   })
 
   test('is opened', () => {
@@ -33,6 +40,37 @@ describe('Index', () => {
     })
 
     expect(wrapper.vm.show).toBe(true)
+    expect(wrapper.isVisible()).toBe(true)
+    expect(wrapper.find('.vue-coe-calendar').isVisible()).toBe(true)
+  })
+
+  test('wrapper class name', () => {
+    const wrapper = shallowMount(VueCoeCalendar, {
+      propsData: {
+        date: '',
+        show: true
+      }
+    })
+
+    expect(wrapper.attributes().class).toBe('vue-coe-calendar')
+    expect(wrapper.classes()).toContain('vue-coe-calendar')
+    expect(wrapper.find('.vue-coe-calendar').exists()).toBe(true)
+  })
+
+  test('wrapper is', () => {
+    const wrapper = shallowMount(VueCoeCalendar, {
+      propsData: {
+        date: '',
+        show: true
+      }
+    })
+
+    expect(wrapper.contains('div')).toBe(true)
+    expect(wrapper.contains(CoeDay)).toBe(true)
+    expect(wrapper.contains(CoeHeader)).toBe(true)
+    expect(wrapper.contains(CoeReset)).toBe(true)
+    expect(wrapper.contains(CoeSelections)).toBe(false)
+    expect(wrapper.contains(CoeWeek)).toBe(true)
   })
 
   test('default: showMonths and showYears', () => {
@@ -53,6 +91,7 @@ describe('Index', () => {
     })
 
     expect(wrapper.vm.isRange).toBe(true)
+    expect(wrapper.props('isRange')).toBe(true)
   })
 
   test('is not range', () => {
@@ -63,6 +102,7 @@ describe('Index', () => {
     })
 
     expect(wrapper.vm.isRange).toBe(false)
+    expect(wrapper.props('isRange')).toBe(false)
   })
 
   test('default date', () => {
@@ -148,15 +188,13 @@ describe('Index', () => {
 })
 
 // WIP
-// test('pick day', () => {
-//   const wrapper = shallowMount(VueCoeCalendar, {
-//     propsData: {
-//       date: '15/12/2017',
-//       show: true
-//     }
-//   })
+test('reset date', () => {
+  const wrapper = shallowMount(VueCoeCalendar, {
+    propsData: {
+      date: '29/01/1989',
+      show: true
+    }
+  })
 
-//   const day = wrapper.find('.day-container')
-
-//   expect(wrapper.vm.day).toBe(15)
-// })
+  // wrapper.find('.reset-container').trigger('click')
+})
