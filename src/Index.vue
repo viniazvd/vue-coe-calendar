@@ -162,34 +162,40 @@ export default {
     pickDay ({ selectable, day }) {
       if (!selectable) return false
 
+      const date = (day = this.day) => getFormattedDate(day, this.month, this.year)
+
       if (this.isRange) {
+        // case:
+        // - start date already selected
+        // - date has already been selected
+        // - reset dates
+        // - set initial date
         if (this.internalDate && this.internalDate.start && this.internalDate.end) {
           this.internalDate = null
           this.day = day
           this.finalDay = null
 
-          this.internalDate = {
-            start: getFormattedDate(this.day, this.month, this.year),
-            end: null
-          }
+          this.internalDate = { start: date(), end: null }
+
+          // case:
+          // - no day has been selected yet
+          // - set the initial date
         } else if (!this.day) {
           this.day = day
 
-          this.internalDate = {
-            start: getFormattedDate(this.day, this.month, this.year),
-            end: null
-          }
+          this.internalDate = { start: date(), end: null }
+
+        // case:
+        // - start date already selected
+        // - set the end date
         } else {
           this.finalDay = day
 
-          this.internalDate = {
-            start: this.internalDate.start,
-            end: getFormattedDate(day, this.month, this.year)
-          }
+          this.internalDate = { start: this.internalDate.start, end: date(day) }
         }
       } else {
         this.day = day
-        this.internalDate = getFormattedDate(this.day, this.month, this.year)
+        this.internalDate = date()
       }
     },
 
