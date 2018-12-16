@@ -9,7 +9,6 @@
   "jsdelivr": "dist/vue-coe-datepicker.js",
   "umd:main": "dist/vue-coe-datepicker.js",
   "scripts": {
-    "lint": "vue-cli-service lint",
     "test": "yarn build && NODE_ENV=test jest",
     "serve": "yarn build && poi --serve examples/main.js",
     "build": "bili"
@@ -17,19 +16,14 @@
   "devDependencies": {
     "@babel/core": "^7.0.0-beta",
     "@vue/cli-plugin-babel": "^3.0.5",
-    "@vue/cli-plugin-eslint": "^3.2.1",
     "@vue/cli-service": "^3.0.5",
-    "@vue/eslint-config-standard": "^4.0.0",
     "@vue/test-utils": "^1.0.0-beta.25",
     "autoprefixer": "^9.4.2",
     "babel-core": "^7.0.0-beta",
-    "babel-eslint": "^10.0.1",
     "babel-jest": "^23.6.0",
     "babel-preset-env": "^1.7.0",
     "babel-runtime": "^7.0.0-beta",
     "bili": "^3.4.2",
-    "eslint": "^5.10.0",
-    "eslint-plugin-vue": "^5.0.0",
     "jest": "^23.6.0",
     "node-sass": "^4.9.0",
     "poi": "^12.1.5",
@@ -39,8 +33,7 @@
     "stylus-loader": "^3.0.2",
     "vue": "^2.5.21",
     "vue-jest": "^3.0.0",
-    "vue-template-compiler": "^2.5.21",
-    "vue-test-utils": "^1.0.0-beta.11"
+    "vue-template-compiler": "^2.5.21"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -54,20 +47,6 @@
     },
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"
-    }
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "@vue/standard"
-    ],
-    "rules": {},
-    "parserOptions": {
-      "parser": "babel-eslint"
     }
   }
 }
