@@ -194,8 +194,12 @@ export default {
     },
 
     apply () {
-      if (this.internalDate.length || Object.keys(this.internalDate).length) {
+      const isValidString = this.internalDate.length
+      const isValidObject = typeof this.internalDate === 'object' && Object.values(this.internalDate).filter(Boolean).length
+
+      if (isValidString || isValidObject) {
         this.$emit('date-handler', this.internalDate)
+        this.$emit('show', false)
       }
     },
 
