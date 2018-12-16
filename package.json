@@ -14,16 +14,10 @@
     "build": "bili"
   },
   "devDependencies": {
-    "@babel/core": "^7.2.2",
-    "@vue/cli-plugin-babel": "^3.2.0",
-    "@vue/cli-service": "^3.2.0",
     "@vue/test-utils": "^1.0.0-beta.27",
     "autoprefixer": "^9.4.2",
-    "babel-core": "^7.0.0-beta",
-    "babel-jest": "^23.6.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-runtime": "^7.0.0-beta",
     "bili": "^3.4.2",
+    "esm": "^3.0.84",
     "jest": "^23.6.0",
     "node-sass": "^4.11.0",
     "poi": "^12.1.5",
@@ -32,21 +26,9 @@
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
     "vue": "^2.5.21",
-    "vue-jest": "^3.0.2",
     "vue-template-compiler": "^2.5.21"
   },
   "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "vue"
-    ],
-    "transform": {
-      "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
-      ".*\\.(vue)$": "<rootDir>/node_modules/vue-jest"
-    },
-    "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/src/$1"
-    }
+    "setupFiles": [ "esm" ]
   }
 }
