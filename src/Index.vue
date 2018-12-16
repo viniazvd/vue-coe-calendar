@@ -1,5 +1,5 @@
 <template>
-  <div id="app" v-if="show" v-click-outside="close" class="vue-coe-datepicker">
+  <div id="app" v-if="show" v-click-outside="close" class="vue-coe-calendar">
     <div v-if="!showMonths && !showYears" class="container-calendar">
       <coe-reset @reset-date="resetDate" />
 
@@ -47,7 +47,7 @@ import CoeDay from './components/CoeDay'
 import CoeSelections from './components/CoeSelections'
 
 export default {
-  name: 'vue-coe-datepicker',
+  name: 'vue-coe-calendar',
 
   components: { CoeReset, CoeHeader, CoeWeek, CoeDay, CoeSelections },
 
@@ -55,7 +55,7 @@ export default {
     show: Boolean,
     isRange: Boolean,
     date: {
-      type: [String, Object, InputEvent],
+      type: [String, Object],
       required: true
     }
   },
@@ -226,7 +226,7 @@ export default {
 </script>
 
 <style lang="scss">
-.vue-coe-datepicker {
+.vue-coe-calendar {
   width: 250px;
   height: auto;
   margin-top: 10px;
