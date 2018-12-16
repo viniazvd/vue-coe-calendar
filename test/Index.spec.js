@@ -201,7 +201,6 @@ describe('VueCoeCalendar', () => {
       .trigger('click')
 
     expect(wrapper.vm.month).toEqual(12)
-<<<<<<< HEAD
   })
 
   test('change month: list', () => {
@@ -252,59 +251,6 @@ describe('VueCoeCalendar', () => {
     expect(wrapper.vm.year).toEqual(1962)
   })
 
-=======
-  })
-
-  test('change month: list', () => {
-    const wrapper = mount(VueCoeCalendar, {
-      propsData: {
-        date: '29/01/1989',
-        show: true
-      }
-    })
-
-    wrapper
-      .find('.container-calendar')
-      .find('.header-container')
-      .find('.date-preview')
-      .findAll('span').at(0)
-      .trigger('click')
-
-    wrapper
-      .find('.options-selection')
-      .find('.months')
-      .findAll('.month').at(2)
-      .trigger('click')
-
-    // expect(optionsSelection.classes()).toContain('options-selection')
-    expect(wrapper.vm.month).toEqual(3)
-  })
-
-  test('change year: list', () => {
-    const wrapper = mount(VueCoeCalendar, {
-      propsData: {
-        date: '29/01/1989',
-        show: true
-      }
-    })
-
-    wrapper
-      .find('.container-calendar')
-      .find('.header-container')
-      .find('.date-preview')
-      .findAll('span').at(1)
-      .trigger('click')
-
-    wrapper
-      .find('.options-selection')
-      .find('.years')
-      .findAll('.year').at(2)
-      .trigger('click')
-
-    expect(wrapper.vm.year).toEqual(1962)
-  })
-
->>>>>>> 7b8ca8acf3d7478a8e409ea5355509648a0608c3
   test('reset date', () => {
     const wrapper = mount(VueCoeCalendar, {
       propsData: {
@@ -355,7 +301,6 @@ describe('VueCoeCalendar', () => {
 
     expect(wrapper.vm.day).toEqual(29)
   })
-<<<<<<< HEAD
 
   test('showDisabledDays is true', () => {
     const wrapper = mount(VueCoeCalendar, {
@@ -376,6 +321,4 @@ describe('VueCoeCalendar', () => {
     expect(day.text()).toBe('26')
     expect(day.classes()).toContain('-hide')
   })
-=======
->>>>>>> 7b8ca8acf3d7478a8e409ea5355509648a0608c3
 })
