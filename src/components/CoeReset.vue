@@ -12,7 +12,7 @@ export default {
   functional: true,
 
   render (h, { listeners }) {
-    const button = [ h('button', { on: { click: listeners['reset-date'] } }, 'REDEFINIR') ]
+    const button = [ h('button', { class: 'reset', on: { click: listeners['reset-date'] } }, 'REDEFINIR') ]
 
     return h('div', {
       attrs: { class: 'reset-container' }
