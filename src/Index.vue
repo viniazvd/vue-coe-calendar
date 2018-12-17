@@ -36,6 +36,7 @@ import clickOutside from './support/directives/outside'
 
 // services
 import { getDay, getMonth, getYear, getDate, getFormattedDate, months } from './support/services'
+import isValid from './support/services/isValid'
 import { getCalendar } from './support/services/calendar'
 // import { rangeOption } from './support/services/pickDay'
 
@@ -106,8 +107,7 @@ export default {
 
   watch: {
     date (d) {
-      // if (isValid(d)) {
-      if (d.length === 10) {
+      if (isValid(d)) {
         this.day = +getDay(d)
         this.month = +getMonth(d)
         this.year = +getYear(d)
