@@ -80,31 +80,19 @@ export default {
   },
 
   mounted () {
-    if (!this.date) {
-      const date = new Date()
-      const options = { day: '2-digit', month: '2-digit', year: 'numeric' }
+    const date = new Date()
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' }
 
-      const currentDate = date.toLocaleDateString('pt-BR', options)
+    const currentDate = date.toLocaleDateString('pt-BR', options)
 
-      if (this.isRange) {
-        this.internalDate = {
-          start: null,
-          end: null
-        }
-      }
+    this.day = +getDay(this.date || currentDate)
+    this.month = +getMonth(this.date || currentDate)
+    this.year = +getYear(this.date || currentDate)
 
-      this.month = +getMonth(currentDate)
-      this.year = +getYear(currentDate)
-    } else {
-      if (this.isRange) {
-        this.internalDate = Object.create(null)
-        this.day = +getDay(this.date.start)
-        this.month = +getMonth(this.date.start)
-        this.year = +getYear(this.date.start)
-      } else {
-        this.day = +getDay(this.date)
-        this.month = +getMonth(this.date)
-        this.year = +getYear(this.date)
+    if (this.isRange) {
+      this.internalDate = {
+        start: this.date || currentDate,
+        end: null
       }
     }
   },
