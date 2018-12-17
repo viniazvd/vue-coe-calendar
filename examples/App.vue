@@ -28,8 +28,10 @@ export default {
 }
 </script>
 
-<style lang="stylus">
-.App
-  &__title
-    font-size 28px
+<style lang="scss">
+.App {
+  &__title {
+    font-size: 28px;
+  }
+}
 </style>
