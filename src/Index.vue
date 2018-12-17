@@ -35,7 +35,7 @@
 import clickOutside from './support/directives/outside'
 
 // services
-import { getDay, getMonth, getYear, getFormattedDate, months } from './support/services'
+import { getDay, getMonth, getYear, getDate, getFormattedDate, months } from './support/services'
 import { getCalendar } from './support/services/calendar'
 // import { rangeOption } from './support/services/pickDay'
 
@@ -120,6 +120,14 @@ export default {
       } else {
         this.day = null
       }
+    },
+
+    internalDate: {
+      handler ({ start, end }) {
+        if (start && end && (getDate(start) > getDate(end))) {
+          this.internalDate = { start: end, end: start }
+        }
+      }
     }
   },
 
@@ -162,34 +170,40 @@ export default {
     pickDay ({ selectable, day }) {
       if (!selectable) return false
 
+      const date = (day = this.day) => getFormattedDate(day, this.month, this.year)
+
       if (this.isRange) {
+        // case 1:
+        // - initial date already selected
+        // - end date already selected
+        // - reset dates
+        // - set initial date
         if (this.internalDate && this.internalDate.start && this.internalDate.end) {
           this.internalDate = null
           this.day = day
           this.finalDay = null
 
-          this.internalDate = {
-            start: getFormattedDate(this.day, this.month, this.year),
-            end: null
-          }
+          this.internalDate = { start: date(), end: null }
+
+          // case 2:
+          // - no date selected yet
+          // - set the initial date
         } else if (!this.day) {
           this.day = day
 
-          this.internalDate = {
-            start: getFormattedDate(this.day, this.month, this.year),
-            end: null
-          }
+          this.internalDate = { start: date(), end: null }
+
+        // case 3:
+        // - initial date already selected
+        // - set the end date
         } else {
           this.finalDay = day
 
-          this.internalDate = {
-            start: this.internalDate.start,
-            end: getFormattedDate(day, this.month, this.year)
-          }
+          this.internalDate = { start: this.internalDate.start, end: date(day) }
         }
       } else {
         this.day = day
-        this.internalDate = getFormattedDate(this.day, this.month, this.year)
+        this.internalDate = date()
       }
     },
 

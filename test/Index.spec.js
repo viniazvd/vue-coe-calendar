@@ -1,11 +1,18 @@
-import { shallowMount } from '@vue/test-utils'
+import { mount, shallowMount } from '@vue/test-utils'
+
 import { getMonth, getYear } from '../src/support/services'
 import { getCalendar } from '../src/support/services/calendar'
 
 import VueCoeCalendar from '../'
+import VueCoeCalendar from '../src/Index.vue'
+import CoeDay from '../src/components/CoeDay.vue'
+import CoeHeader from '../src/components/CoeHeader.vue'
+import CoeReset from '../src/components/CoeReset.vue'
+import CoeSelections from '../src/components/CoeSelections.vue'
+import CoeWeek from '../src/components/CoeWeek.vue'
 
 /* eslint-disable */
-describe('Index', () => {
+describe('VueCoeCalendar', () => {
   test('is a Vue instance', () => {
     const wrapper = shallowMount(VueCoeCalendar, { propsData: { date: '' } })
 
@@ -21,6 +28,7 @@ describe('Index', () => {
     })
 
     expect(wrapper.vm.show).toBe(false)
+    expect(wrapper.isEmpty()).toBe(true)
   })
 
   test('is opened', () => {
@@ -32,6 +40,37 @@ describe('Index', () => {
     })
 
     expect(wrapper.vm.show).toBe(true)
+    expect(wrapper.isVisible()).toBe(true)
+    expect(wrapper.find('.vue-coe-calendar').isVisible()).toBe(true)
+  })
+
+  test('wrapper class name', () => {
+    const wrapper = shallowMount(VueCoeCalendar, {
+      propsData: {
+        date: '',
+        show: true
+      }
+    })
+
+    expect(wrapper.attributes().class).toBe('vue-coe-calendar')
+    expect(wrapper.classes()).toContain('vue-coe-calendar')
+    expect(wrapper.find('.vue-coe-calendar').exists()).toBe(true)
+  })
+
+  test('wrapper is', () => {
+    const wrapper = shallowMount(VueCoeCalendar, {
+      propsData: {
+        date: '',
+        show: true
+      }
+    })
+
+    expect(wrapper.contains('div')).toBe(true)
+    expect(wrapper.contains(CoeDay)).toBe(true)
+    expect(wrapper.contains(CoeHeader)).toBe(true)
+    expect(wrapper.contains(CoeReset)).toBe(true)
+    expect(wrapper.contains(CoeSelections)).toBe(false)
+    expect(wrapper.contains(CoeWeek)).toBe(true)
   })
 
   test('default: showMonths and showYears', () => {
@@ -52,6 +91,7 @@ describe('Index', () => {
     })
 
     expect(wrapper.vm.isRange).toBe(true)
+    expect(wrapper.props('isRange')).toBe(true)
   })
 
   test('is not range', () => {
@@ -62,6 +102,7 @@ describe('Index', () => {
     })
 
     expect(wrapper.vm.isRange).toBe(false)
+    expect(wrapper.props('isRange')).toBe(false)
   })
 
   test('default date', () => {
@@ -143,18 +184,140 @@ describe('Index', () => {
     expect(wrapper.vm.month).toBe(12)
     expect(wrapper.vm.year).toBe(2017)
   })
+
+  test('change month: dateHandler = "<"', () => {
+    const wrapper = mount(VueCoeCalendar, {
+      propsData: {
+        date: '29/01/1989',
+        show: true
+      }
+    })
+
+    wrapper
+      .find('.container-calendar')
+      .find('.header-container')
+      .findAll('span').at(0)
+      .trigger('click')
+
+    expect(wrapper.vm.month).toEqual(12)
+  })
+
+  test('change month: list', () => {
+    const wrapper = mount(VueCoeCalendar, {
+      propsData: {
+        date: '29/01/1989',
+        show: true
+      }
+    })
+
+    wrapper
+      .find('.container-calendar')
+      .find('.header-container')
+      .find('.date-preview')
+      .findAll('span').at(0)
+      .trigger('click')
+
+    wrapper
+      .find('.options-selection')
+      .find('.months')
+      .findAll('.month').at(2)
+      .trigger('click')
+
+    expect(wrapper.vm.month).toEqual(3)
+  })
+
+  test('change year: list', () => {
+    const wrapper = mount(VueCoeCalendar, {
+      propsData: {
+        date: '29/01/1989',
+        show: true
+      }
+    })
+
+    wrapper
+      .find('.container-calendar')
+      .find('.header-container')
+      .find('.date-preview')
+      .findAll('span').at(1)
+      .trigger('click')
+
+    wrapper
+      .find('.options-selection')
+      .find('.years')
+      .findAll('.year').at(2)
+      .trigger('click')
+
+    expect(wrapper.vm.year).toEqual(1962)
+  })
+
+  test('reset date', () => {
+    const wrapper = mount(VueCoeCalendar, {
+      propsData: {
+        date: '29/01/1989',
+        show: true
+      }
+    })
+
+    wrapper.find('div > div > div > button').trigger('click')
+
+    expect(wrapper.vm.day).toEqual(null)
+    expect(wrapper.vm.finalDay).toEqual(null)
+    expect(wrapper.vm.internalDate).toEqual({})
+  })
+
+  test('pick day', () => {
+    const wrapper = mount(VueCoeCalendar, {
+      propsData: {
+        date: '29/01/1989',
+        show: true
+      }
+    })
+
+    wrapper
+      .find('.container-calendar')
+      .find('.day-container')
+      .findAll('div').at(15)
+      .find('span')
+      .trigger('click')
+
+    expect(wrapper.vm.day).toEqual(10)
+  })
+
+  test('pick a not selectable day', () => {
+    const wrapper = mount(VueCoeCalendar, {
+      propsData: {
+        date: '29/01/1989',
+        show: true
+      }
+    })
+
+    wrapper
+      .find('.container-calendar')
+      .find('.day-container')
+      .findAll('div').at(0)
+      .find('span')
+      .trigger('click')
+
+    expect(wrapper.vm.day).toEqual(29)
+  })
+
+  test('showDisabledDays is true', () => {
+    const wrapper = mount(VueCoeCalendar, {
+      propsData: {
+        date: '16/12/2018',
+        show: true,
+        showDisabledDays: true
+      }
+    })
+
+    const day = wrapper
+      .find('.container-calendar')
+      .find('.day-container')
+      .findAll('div').at(0)
+      .find('span')
+
+
+    expect(day.text()).toBe('26')
+    expect(day.classes()).toContain('-hide')
+  })
 })
-
-// WIP
-// test('pick day', () => {
-//   const wrapper = shallowMount(VueCoeCalendar, {
-//     propsData: {
-//       date: '15/12/2017',
-//       show: true
-//     }
-//   })
-
-//   const day = wrapper.find('.day-container')
-
-//   expect(wrapper.vm.day).toBe(15)
-// })
