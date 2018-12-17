@@ -10,12 +10,12 @@
 //   </div>
 // </template>
 
-function dayClasses (showDisabledDays, { selectable, day, month, inRange, clicked }) {
+function dayClasses (showDisabledDays, { selectable, day, month, isRange, clicked }) {
   return [
     'value',
     {
       '-selectable': selectable,
-      '-in-range': (inRange || clicked) && selectable,
+      '-in-range': (isRange || clicked) && selectable,
       '-hide': showDisabledDays && !selectable
     }
   ]
