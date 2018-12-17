@@ -43,7 +43,7 @@ const getCalendar = {
           clicked = false
         } else {
           if (isAfterMonthEnd(i)) {
-            tempDay = i - dayAfterMonth(month + 1) - new Date(year, month, 1).getDay() + 1
+            tempDay = i - dayAfterMonth(month + 1) - new Date(year, month, 1).getDay() - (new Date(year, month, 1).getDay() === 0 ? 6 : - 1)
 
             day = tempDay
             selectable = false
