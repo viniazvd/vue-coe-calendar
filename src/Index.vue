@@ -34,11 +34,8 @@
 // directive
 import clickOutside from './support/directives/outside'
 
-// services
-import { getDay, getMonth, getYear, getDate, getFormattedDate, months } from './support/services'
-import isValid from './support/services/isValid'
-import { getCalendar } from './support/services/calendar'
-// import { rangeOption } from './support/services/pickDay'
+// mixins
+import calendar from './support/mixins/calendar'
 
 // components
 import CoeReset from './components/CoeReset.vue'
@@ -47,8 +44,15 @@ import CoeWeek from './components/CoeWeek.vue'
 import CoeDay from './components/CoeDay.vue'
 import CoeSelections from './components/CoeSelections.vue'
 
+// services
+import { getDay, getMonth, getYear, getDate, getFormattedDate, months } from './support/services'
+import isValid from './support/services/isValid'
+// import { rangeOption } from './support/services/pickDay'
+
 export default {
   name: 'vue-coe-calendar',
+
+  mixins: [ calendar ],
 
   components: { CoeReset, CoeHeader, CoeWeek, CoeDay, CoeSelections },
 
@@ -136,10 +140,6 @@ export default {
       if (!this.day || !this.internalDate) return null
 
       return +getMonth(this.isRange ? this.internalDate.start : this.internalDate)
-    },
-
-    calendar () {
-      return getCalendar.call(this, this.year, this.month - 1)
     }
   },
 
@@ -208,10 +208,10 @@ export default {
     },
 
     apply () {
-      const isValidString = this.internalDate.length
-      const isValidObject = typeof this.internalDate === 'object' && Object.values(this.internalDate).filter(Boolean).length
+      const hasDate__STRING = typeof this.internalDate === 'string' && this.internalDate.length
+      const hasDate__OBJECT = typeof this.internalDate === 'object' && Object.values(this.internalDate).filter(Boolean).length
 
-      if (isValidString || isValidObject) {
+      if (hasDate__STRING || hasDate__OBJECT) {
         this.$emit('date-handler', this.internalDate)
         this.$emit('show', false)
       }
