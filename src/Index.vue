@@ -40,11 +40,11 @@ import { getCalendar } from './support/services/calendar'
 // import { rangeOption } from './support/services/pickDay'
 
 // components
-import CoeReset from './components/CoeReset'
-import CoeHeader from './components/CoeHeader'
-import CoeWeek from './components/CoeWeek'
-import CoeDay from './components/CoeDay'
-import CoeSelections from './components/CoeSelections'
+import CoeReset from './components/CoeReset.vue'
+import CoeHeader from './components/CoeHeader.vue'
+import CoeWeek from './components/CoeWeek.vue'
+import CoeDay from './components/CoeDay.vue'
+import CoeSelections from './components/CoeSelections.vue'
 
 export default {
   name: 'vue-coe-calendar',

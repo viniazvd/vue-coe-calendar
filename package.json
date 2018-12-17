@@ -2,35 +2,34 @@
   "name": "vue-coe-datepicker",
   "version": "0.1.0",
   "private": true,
+  "cdn": "dist/vue-coe-datepicker.js",
+  "main": "dist/vue-coe-datepicker.cjs.js",
+  "unpkg": "dist/vue-coe-datepicker.js",
+  "module": "dist/vue-coe-datepicker.es.js",
+  "jsdelivr": "dist/vue-coe-datepicker.js",
+  "umd:main": "dist/vue-coe-datepicker.js",
   "scripts": {
-    "test": "NODE_ENV=test jest",
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
-  },
-  "dependencies": {
-    "vue": "^2.5.17"
+    "test": "yarn build && NODE_ENV=test jest",
+    "serve": "yarn build && poi --serve examples/main.js",
+    "build": "bili"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0-beta",
-    "babel-core": "^7.0.0-beta",
-    "babel-runtime": "^7.0.0-beta",
-    "@vue/cli-plugin-babel": "^3.0.5",
-    "@vue/cli-plugin-eslint": "^3.0.5",
-    "@vue/cli-service": "^3.0.5",
-    "@vue/eslint-config-standard": "^4.0.0",
-    "@vue/test-utils": "^1.0.0-beta.25",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.0",
+    "@vue/test-utils": "^1.0.0-beta.27",
+    "autoprefixer": "^9.4.2",
     "babel-jest": "^23.6.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-eslint": "^10.0.1",
-    "eslint": "^5.8.0",
-    "eslint-plugin-vue": "^5.0.0-0",
-    "node-sass": "^4.9.0",
-    "sass-loader": "^7.0.1",
+    "bili": "^3.4.2",
     "jest": "^23.6.0",
-    "vue-jest": "^3.0.0",
-    "vue-test-utils": "^1.0.0-beta.11",
-    "vue-template-compiler": "^2.5.17"
+    "node-sass": "^4.11.0",
+    "poi": "^12.1.5",
+    "rollup-plugin-vue": "^4.3.2",
+    "sass-loader": "^7.1.0",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2",
+    "vue": "^2.5.21",
+    "vue-jest": "^3.0.2",
+    "vue-template-compiler": "^2.5.21"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -45,29 +44,5 @@
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"
     }
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "@vue/standard"
-    ],
-    "rules": {},
-    "parserOptions": {
-      "parser": "babel-eslint"
-    }
-  },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {}
-    }
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ]
+  }
 }
