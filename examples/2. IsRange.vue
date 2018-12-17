@@ -4,16 +4,17 @@
       class="DatePicker__input"
       type="text"
       v-model="date"
-      @blur="isFocused = false"
-      @focus="isFocused = true"
+      @click="showPicker = true"
     >
 
     <calendar
       is-range
       :date="date"
-      :show="isFocused"
-      @date-handler="(value) => date = value"
+      :show="showPicker"
+      @show="show => showPicker = show"
+      @date-handler="v => date = v"
     />
+
   </div>
 </template>
 
@@ -25,7 +26,7 @@ export default {
   data () {
     return {
       date: '',
-      isFocused: false
+      showPicker: false
     }
   }
 }
