@@ -34,14 +34,3 @@ export function getFormattedDate (day, month, year) {
 export function getDate (date) {
   return +new Date(getYear(date), (getMonth(date) - 1), getDay(date))
 }
-
-// wip
-export function isValid (date) {
-  const day = +getDay(date)
-  const month = +getMonth(date)
-  const year = +getYear(date)
-
-  const d = new Date(`${year}-${month}-${day}`)
-
-  return date.length === 10 && ((Boolean(+d) && d.getDate() + 1) === day)
-}
