@@ -165,7 +165,7 @@ export default {
       const date = (day = this.day) => getFormattedDate(day, this.month, this.year)
 
       if (this.isRange) {
-        // case:
+        // case 1:
         // - initial date already selected
         // - end date already selected
         // - reset dates
@@ -177,15 +177,15 @@ export default {
 
           this.internalDate = { start: date(), end: null }
 
-          // case:
-          // - no day has been selected yet
+          // case 2:
+          // - no date selected yet
           // - set the initial date
         } else if (!this.day) {
           this.day = day
 
           this.internalDate = { start: date(), end: null }
 
-        // case:
+        // case 3:
         // - initial date already selected
         // - set the end date
         } else {
