@@ -19,7 +19,7 @@ function getDayAfterMonth (year, month) {
   return new Date(year, month, 0).getDate()
 }
 
-function isRange (day, month) {
+function getRange (day, month) {
   if (!this.internalDate) return false
   if (!this.internalDate.start || !this.internalDate.end) return false
   if (!this.isRange) return day === this.day && (month + 1) === this.initMonth
@@ -55,7 +55,7 @@ export function getCalendar (year, month) {
   const isAfterMonthEnd = i => i - new Date(year, month, 0).getDay() > dayAfterMonth(month + 1)
 
   let calendar = []
-  let day, tempDay, selectable, inRange, clicked
+  let day, tempDay, selectable, isRange, clicked
 
   for (let i = 0; i < 42; i++) {
     if (isBeforeMonthStart(i)) {
@@ -63,7 +63,7 @@ export function getCalendar (year, month) {
 
       day = tempDay
       selectable = false
-      inRange = isRange.call(this, tempDay, month)
+      isRange = getRange.call(this, tempDay, month)
       clicked = false
     } else {
       if (isAfterMonthEnd(i)) {
@@ -71,19 +71,19 @@ export function getCalendar (year, month) {
 
         day = tempDay
         selectable = false
-        inRange = isRange.call(this, tempDay, month)
+        isRange = getRange.call(this, tempDay, month)
         clicked = false
       } else {
         tempDay = i - new Date(year, month, 0).getDay()
 
         day = tempDay
         selectable = true
-        inRange = isRange.call(this, tempDay, month)
+        isRange = getRange.call(this, tempDay, month)
         clicked = isClicked.call(this, tempDay, month, year)
       }
     }
 
-    calendar.push({ day, month, selectable, inRange, clicked })
+    calendar.push({ day, month, selectable, isRange, clicked })
   }
 
   return calendar
