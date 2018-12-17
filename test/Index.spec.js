@@ -4,7 +4,6 @@ import { getMonth, getYear } from '../src/support/services'
 import { getCalendar } from '../src/support/services/calendar'
 
 import VueCoeCalendar from '../'
-import VueCoeCalendar from '../src/Index.vue'
 import CoeDay from '../src/components/CoeDay.vue'
 import CoeHeader from '../src/components/CoeHeader.vue'
 import CoeReset from '../src/components/CoeReset.vue'
