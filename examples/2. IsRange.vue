@@ -8,10 +8,10 @@
     >
 
     <calendar
+      v-if="showPicker"
+      v-outside="() => showPicker = false"
       is-range
       :date="date"
-      :show="showPicker"
-      @show="show => showPicker = show"
       @date-handler="v => date = v"
     />
 
@@ -19,13 +19,14 @@
 </template>
 
 <script>
-import Calendar from '../'
+// import Calendar from '../'
+import Calendar from '../src/Index.vue'
 
 export default {
   components: { Calendar },
   data () {
     return {
-      date: '',
+      date: '20/04/2018',
       showPicker: false
     }
   }
