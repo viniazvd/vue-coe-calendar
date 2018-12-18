@@ -1,5 +1,11 @@
-import { getMonth, getYear, getDate, getFormattedDate } from '../services/index'
-import { getDayBeforeMonth, getDayAfterMonth } from '../services/calendar'
+import { getMonth, getYear, getDate } from '../services/index'
+import {
+  firstDayBeforeMonth,
+  isBeforeMonthStart,
+  lastDayCurrentMonth,
+  isAfterMonthEnd,
+  weekDay
+} from '../services/calendar'
 
 const getCalendar = {
   methods: {
@@ -24,45 +30,38 @@ const getCalendar = {
     },
 
     getCalendar (year, month) {
-      const dayBeforeMonth = getDayBeforeMonth(year, month)
-      const dayAfterMonth = month => getDayAfterMonth(year, month)
+      return Array.from({ length: 42 }).map((_, i) => {
+        if (isBeforeMonthStart(year, month, i)) {
+          const day = firstDayBeforeMonth(year, month) + i
 
-      const isBeforeMonthStart = i => dayBeforeMonth + i <= dayAfterMonth(month)
-      const isAfterMonthEnd = i => i - new Date(year, month, 0).getDay() > dayAfterMonth(month + 1)
-
-      let calendar = []
-      let day, tempDay, selectable, isRange, clicked
-
-      for (let i = 0; i < 42; i++) {
-        if (isBeforeMonthStart(i)) {
-          tempDay = dayBeforeMonth + i
-
-          day = tempDay
-          selectable = false
-          isRange = this.getRange(tempDay, month)
-          clicked = false
+          return {
+            day,
+            selectable: false,
+            isRange: this.getRange(day, month),
+            clicked: false
+          }
         } else {
-          if (isAfterMonthEnd(i)) {
-            tempDay = i - dayAfterMonth(month + 1) - new Date(year, month, 1).getDay() - (new Date(year, month, 1).getDay() === 0 ? 6 : - 1)
+          if (isAfterMonthEnd(year, month, i)) {
+            const day = i - lastDayCurrentMonth(year, month) - new Date(year, month, 1).getDay() - (new Date(year, month, 1).getDay() === 0 ? 6 : - 1)
 
-            day = tempDay
-            selectable = false
-            isRange = this.getRange(tempDay, month)
-            clicked = false
+            return {
+              day,
+              selectable: false,
+              isRange: this.getRange(day, month),
+              clicked: false
+            }
           } else {
-            tempDay = i - new Date(year, month, 0).getDay()
+            const day = i - weekDay(year, month)
 
-            day = tempDay
-            selectable = true
-            isRange = this.getRange(tempDay, month)
-            clicked = this.isClicked(tempDay, month, year)
+            return {
+              day,
+              selectable: true,
+              isRange: this.getRange(day, month),
+              clicked: this.isClicked(day, month, year)
+            }
           }
         }
-
-        calendar.push({ day, month, selectable, isRange, clicked })
-      }
-
-      return calendar
+      })
     }
   },
 
