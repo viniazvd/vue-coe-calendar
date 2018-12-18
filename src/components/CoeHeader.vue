@@ -29,10 +29,10 @@ export default {
   },
 
   render (h, { props, listeners }) {
-    const handler = (symble, option) => h('span', {
+    const handler = (symbol, option) => h('span', {
       attrs: { class: 'monthHandler' },
-      on: { click: () => listeners['date-handler'](option) }
-    }, symble)
+      on: { click: () => listeners['date-handler']({}, option) }
+    }, symbol)
 
     const decrementHandler = [ handler('‹', '<') ]
 
