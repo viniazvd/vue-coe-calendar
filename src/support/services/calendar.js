@@ -1,4 +1,4 @@
-export function getDayBeforeMonth (year, month) {
+export function firstDayBeforeMonth (year, month) {
   const date = new Date(year, month, 0)
   const day = date.getDay()
   const calendarStart = new Date(date)
@@ -13,6 +13,15 @@ export function getDayBeforeMonth (year, month) {
   return calendarStart.getDate()
 }
 
-export function getDayAfterMonth (year, month) {
-  return new Date(year, month, 0).getDate()
-}
+export const lastDayCurrentMonth = (year, month) => new Date(year, month + 1, 0).getDate()
+
+export const lastDayLastMonth = (year, month) => new Date(year, month, 0).getDate()
+
+export const isBeforeMonthStart = (year, month, i) => firstDayBeforeMonth(year, month) + i <= lastDayLastMonth(year, month)
+
+export const isAfterMonthEnd = (year, month, i) => i - new Date(year, month, 0).getDay() > lastDayCurrentMonth(year, month)
+
+export const weekDay = (year, month) => new Date(year, month, 0).getDay()
+
+// WIP
+export const firstDayAfterMonth = (year, month) => new Date(year, month, 1).getDay() - (new Date(year, month, 1).getDay() === 0 ? 6 : - 1)
