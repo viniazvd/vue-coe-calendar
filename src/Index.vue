@@ -4,7 +4,7 @@
       <coe-reset @reset-date="resetDate" />
 
       <coe-header
-        :month="getMonthName(month)"
+        :month="month"
         :year="year"
         @show-months="showMonths = !showMonths"
         @show-years="showYears = !showYears"
@@ -45,7 +45,7 @@ import CoeDay from './components/CoeDay.vue'
 import CoeSelections from './components/CoeSelections.vue'
 
 // services
-import { getDay, getMonth, getYear, getDate, getFormattedDate, months } from './support/services'
+import { getDay, getMonth, getYear, getDate, getFormattedDate } from './support/services'
 import isValid from './support/services/isValid'
 // import { rangeOption } from './support/services/pickDay'
 
@@ -203,10 +203,6 @@ export default {
         this.$emit('date-handler', this.internalDate)
         this.$emit('show', false)
       }
-    },
-
-    getMonthName (index) {
-      return months[index]
     },
 
     resetDate () {
