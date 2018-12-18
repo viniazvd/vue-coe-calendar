@@ -30,7 +30,7 @@ const getCalendar = {
     },
 
     getCalendar (year, month) {
-      return Array.from({ length: 42 }).map((_, i) => {
+      return Array.from({ length: 42 }, (_, i) => {
         if (isBeforeMonthStart(year, month, i)) {
           const day = firstDayBeforeMonth(year, month) + i
 
