@@ -1,5 +1,5 @@
 <template>
-  <div id="app" v-if="show" v-click-outside="close" class="vue-coe-calendar">
+  <div id="app" class="vue-coe-calendar">
     <div v-if="!showMonths && !showYears" class="container-calendar">
       <coe-reset @reset-date="resetDate" />
 
@@ -31,9 +31,6 @@
 </template>
 
 <script>
-// directive
-import clickOutside from './support/directives/outside'
-
 // mixins
 import calendar from './support/mixins/calendar'
 
@@ -57,15 +54,12 @@ export default {
   components: { CoeReset, CoeHeader, CoeWeek, CoeDay, CoeSelections },
 
   props: {
-    show: Boolean,
     isRange: Boolean,
     date: {
       type: [String, Object],
       required: true
     }
   },
-
-  directives: { clickOutside },
 
   data () {
     return {
@@ -80,22 +74,13 @@ export default {
   },
 
   created () {
-  /*
-  * - add a watcher and then destroy it (IIFE)
-  * - only listen once a keyup event
-  * - event: dateHandler
-  *
-  * authors: @viniazvd && @guibarscevicius
-  */
-    this.$nextTick(() =>
-      this.$watch('show',
-        this.$once('keyup',
-          window.addEventListener('keyup',
-            e => this.dateHandler(null, e)
-          )
-        )
-      )()
-    )
+    this.$on('hook:mounted', () => {
+      this.$once('keyup', window.addEventListener('keyup', this.dateHandler))
+
+      this.$on('hook:beforeDestroy', () => {
+        window.removeEventListener('keyup', this.dateHandler)
+      })
+    })
   },
 
   mounted () {
@@ -103,10 +88,11 @@ export default {
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' }
 
     const currentDate = date.toLocaleDateString('pt-BR', options)
+    const inputDate = isValid(this.date) && this.date
 
-    this.day = +getDay(this.date || currentDate)
-    this.month = +getMonth(this.date || currentDate)
-    this.year = +getYear(this.date || currentDate)
+    this.day = +getDay(inputDate || currentDate)
+    this.month = +getMonth(inputDate || currentDate)
+    this.year = +getYear(inputDate || currentDate)
 
     if (this.isRange) {
       this.internalDate = {
@@ -151,9 +137,7 @@ export default {
   },
 
   methods: {
-    dateHandler (handler, { key } = {}) {
-      if (!this.show) return
-
+    dateHandler ({ key } = {}, handler) {
       if (handler === '<' || key === 'ArrowLeft') this.month--
       if ((handler === '<' || key === 'ArrowLeft') && !this.month) {
         this.month = 12
@@ -232,22 +216,6 @@ export default {
       this.internalDate = {}
 
       this.$emit('date-handler', '')
-    },
-
-    close () {
-      if (this.showMonths) {
-        this.showMonths = false
-
-        return
-      }
-
-      if (this.showYears) {
-        this.showYears = false
-
-        return
-      }
-
-      this.$emit('show', false)
     }
   }
 }
