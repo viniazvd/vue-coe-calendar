@@ -13,6 +13,8 @@
 
 import { months } from '../support/services'
 
+const getMonthName = monthIndex => months[monthIndex]
+
 export default {
   name: 'coe-header',
 
@@ -20,40 +22,35 @@ export default {
 
   props: {
     month: {
-      type: String,
-      validator (month) {
-        return Object.values(months).some(m => m === month)
-      }
+      type: Number,
+      validator: m => m >= 1 && m <= 12
     },
     year: Number
   },
 
   render (h, { props, listeners }) {
-    const decrementHandler = [ h('span', {
+    const handler = (symble, option) => h('span', {
       attrs: { class: 'monthHandler' },
-      on: { click: () => listeners['date-handler']('<') }
-    }, '‹') ]
+      on: { click: () => listeners['date-handler'](option) }
+    }, symble)
 
-    const month = [ h('span', {
-      on: { click: listeners['show-months'] }
-    }, [ props.month ]) ]
+    const decrementHandler = [ handler('‹', '<') ]
 
-    const year = [ h('span', {
-      on: { click: listeners['show-years'] }
-    }, [ props.year ]) ]
+    const month = [ h('span', { on: { click: listeners['show-months'] } }, [ getMonthName(props.month) ]) ]
 
-    const datePreview = [ h('div', {
-      attrs: { class: 'date-preview' }
-    }, [ month, year ]) ]
+    const year = [ h('span', { on: { click: listeners['show-years'] } }, [ props.year ]) ]
 
-    const incrementalHandler = [ h('span', {
-      attrs: { class: 'monthHandler' },
-      on: { click: () => listeners['date-handler']('>') }
-    }, '›') ]
+    const datePreview = [ h('div', { attrs: { class: 'date-preview' } }, [ month, year ]) ]
+
+    const incrementalHandler = [ handler('›', '>') ]
 
     return h('div', {
       attrs: { class: 'header-container' }
-    }, [ decrementHandler, datePreview, incrementalHandler ])
+    }, [
+      decrementHandler,
+      datePreview,
+      incrementalHandler
+    ])
   }
 }
 </script>
