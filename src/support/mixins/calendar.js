@@ -10,11 +10,6 @@ const getCalendar = {
       return this.firstDayBeforeMonth + i <= this.lastDayLastMonth
     },
 
-    // WIP
-    // firstDayAfterMonth (year, month) {
-    //   return new Date(year, month, 1).getDay() - (new Date(year, month, 1).getDay() === 0 ? 6 : - 1)
-    // },
-
     getRange (day, month) {
       if (!this.internalDate) return false
       if (!this.internalDate.start || !this.internalDate.end) return false
@@ -73,7 +68,6 @@ const getCalendar = {
 
   computed: {
     calendar () {
-      console.log(this.month)
       return this.getCalendar(this.year, this.month - 1)
     },
 
@@ -90,6 +84,11 @@ const getCalendar = {
       if (calendarStart.getDate() > date.getDate()) return calendarStart.setDate(calendarStart.getDate() - 7)
 
       return calendarStart.getDate()
+    },
+
+    // WIP
+    firstDayAfterMonth () {
+      return new Date(this.year, this.month - 1, 1).getDay() - (new Date(this.year, this.month - 1, 1).getDay() === 0 ? 6 : - 1)
     },
 
     lastDayCurrentMonth () {
