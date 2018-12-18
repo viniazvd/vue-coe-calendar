@@ -1,14 +1,20 @@
 import { getMonth, getYear, getDate } from '../services/index'
-import {
-  firstDayBeforeMonth,
-  isBeforeMonthStart,
-  lastDayCurrentMonth,
-  isAfterMonthEnd,
-  weekDay
-} from '../services/calendar'
 
 const getCalendar = {
   methods: {
+    isAfterMonthEnd (i) {
+      return i - new Date(this.year, this.month - 1, 0).getDay() > this.lastDayCurrentMonth
+    },
+
+    isBeforeMonthStart (i) {
+      return this.firstDayBeforeMonth + i <= this.lastDayLastMonth
+    },
+
+    // WIP
+    // firstDayAfterMonth (year, month) {
+    //   return new Date(year, month, 1).getDay() - (new Date(year, month, 1).getDay() === 0 ? 6 : - 1)
+    // },
+
     getRange (day, month) {
       if (!this.internalDate) return false
       if (!this.internalDate.start || !this.internalDate.end) return false
@@ -31,8 +37,8 @@ const getCalendar = {
 
     getCalendar (year, month) {
       return Array.from({ length: 42 }, (_, i) => {
-        if (isBeforeMonthStart(year, month, i)) {
-          const day = firstDayBeforeMonth(year, month) + i
+        if (this.isBeforeMonthStart(i)) {
+          const day = this.firstDayBeforeMonth + i
 
           return {
             day,
@@ -41,8 +47,8 @@ const getCalendar = {
             clicked: false
           }
         } else {
-          if (isAfterMonthEnd(year, month, i)) {
-            const day = i - lastDayCurrentMonth(year, month) - new Date(year, month, 1).getDay() - (new Date(year, month, 1).getDay() === 0 ? 6 : - 1)
+          if (this.isAfterMonthEnd(i)) {
+            const day = i - this.lastDayCurrentMonth - new Date(year, month, 1).getDay() - (new Date(year, month, 1).getDay() === 0 ? 6 : - 1)
 
             return {
               day,
@@ -51,7 +57,7 @@ const getCalendar = {
               clicked: false
             }
           } else {
-            const day = i - weekDay(year, month)
+            const day = i - this.weekDay
 
             return {
               day,
@@ -67,7 +73,35 @@ const getCalendar = {
 
   computed: {
     calendar () {
+      console.log(this.month)
       return this.getCalendar(this.year, this.month - 1)
+    },
+
+    firstDayBeforeMonth () {
+      const date = new Date(this.year, this.month - 1, 0)
+      const day = date.getDay()
+      const calendarStart = new Date(date)
+
+      // get the difference till the first day of the week plus the offset to start the week at the given day
+      const diff = calendarStart.getDate() - day
+      calendarStart.setDate(diff)
+
+      // in case the start date is further then the start of the month, set back with a week.
+      if (calendarStart.getDate() > date.getDate()) return calendarStart.setDate(calendarStart.getDate() - 7)
+
+      return calendarStart.getDate()
+    },
+
+    lastDayCurrentMonth () {
+      return new Date(this.year, this.month, 0).getDate()
+    },
+
+    lastDayLastMonth () {
+      return new Date(this.year, this.month - 1, 0).getDate()
+    },
+
+    weekDay () {
+      return new Date(this.year, this.month - 1, 0).getDay()
     }
   }
 }
