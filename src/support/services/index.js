@@ -14,15 +14,15 @@ export const months = {
 }
 
 export function getDay (date) {
-  return date.split('/')[0] || date.split('-')[0]
+  return date && date.split('/')[0]
 }
 
 export function getMonth (date) {
-  return date.split('/')[1] || date.split('-')[1]
+  return date && date.split('/')[1]
 }
 
 export function getYear (date) {
-  return date.split('/')[2] || date.split('-')[2]
+  return date && date.split('/')[2]
 }
 
 export function getFormattedDate (day, month, year) {
