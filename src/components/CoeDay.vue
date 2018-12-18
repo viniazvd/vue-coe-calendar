@@ -30,9 +30,7 @@ export default {
     calendar: {
       type: Array,
       required: true,
-      validator (c) {
-        return c.length === 42
-      }
+      validator: c => c.length === 42
     },
     showDisabledDays: Boolean
   },
