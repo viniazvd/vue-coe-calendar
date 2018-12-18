@@ -218,8 +218,17 @@ export default {
     },
 
     close () {
-      this.showMonths = false
-      this.showYears = false
+      if (this.showMonths) {
+        this.showMonths = false
+
+        return
+      }
+
+      if (this.showYears) {
+        this.showYears = false
+
+        return
+      }
 
       this.$emit('show', false)
     }
