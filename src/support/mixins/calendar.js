@@ -43,7 +43,7 @@ const getCalendar = {
           }
         } else {
           if (this.isAfterMonthEnd(i)) {
-            const day = i - this.lastDayCurrentMonth - new Date(year, month, 1).getDay() - (new Date(year, month, 1).getDay() === 0 ? 6 : - 1)
+            const day = i - this.lastDayCurrentMonth - this.weekDay
 
             return {
               day,
@@ -84,11 +84,6 @@ const getCalendar = {
       if (calendarStart.getDate() > date.getDate()) return calendarStart.setDate(calendarStart.getDate() - 7)
 
       return calendarStart.getDate()
-    },
-
-    // WIP
-    firstDayAfterMonth () {
-      return new Date(this.year, this.month - 1, 1).getDay() - (new Date(this.year, this.month - 1, 1).getDay() === 0 ? 6 : - 1)
     },
 
     lastDayCurrentMonth () {
