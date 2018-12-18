@@ -151,7 +151,7 @@ export default {
   },
 
   methods: {
-    dateHandler (handler, { key }) {
+    dateHandler (handler, { key } = {}) {
       if (!this.show) return
 
       if (handler === '<' || key === 'ArrowLeft') this.month--
