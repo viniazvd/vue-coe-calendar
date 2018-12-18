@@ -79,6 +79,25 @@ export default {
     }
   },
 
+  created () {
+  /*
+  * - add a watcher and then destroy it (IIFE)
+  * - only listen once a keyup event
+  * - event: dateHandler
+  *
+  * authors: @viniazvd && @guibarscevicius
+  */
+    this.$nextTick(() =>
+      this.$watch('show',
+        this.$once('keyup',
+          window.addEventListener('keyup',
+            e => this.dateHandler(null, e)
+          )
+        )
+      )()
+    )
+  },
+
   mounted () {
     const date = new Date()
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' }
@@ -132,15 +151,17 @@ export default {
   },
 
   methods: {
-    dateHandler (handler) {
-      if (handler === '<') this.month--
-      if (handler === '<' && !this.month) {
+    dateHandler (handler, { key }) {
+      if (!this.show) return
+
+      if (handler === '<' || key === 'ArrowLeft') this.month--
+      if ((handler === '<' || key === 'ArrowLeft') && !this.month) {
         this.month = 12
         this.year--
       }
 
-      if (handler === '>') this.month++
-      if (handler === '>' && this.month === 13) {
+      if (handler === '>' || key === 'ArrowRight') this.month++
+      if ((handler === '>' || key === 'ArrowRight') && this.month === 13) {
         this.month = 1
         this.year++
       }
