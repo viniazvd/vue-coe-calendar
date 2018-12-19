@@ -44,7 +44,6 @@ import CoeSelections from './components/CoeSelections.vue'
 // services
 import { getDay, getMonth, getYear, getDate, getFormattedDate } from './support/services'
 import isValid from './support/services/isValid'
-// import { rangeOption } from './support/services/pickDay'
 
 export default {
   name: 'vue-coe-calendar',
@@ -151,15 +150,6 @@ export default {
       }
     },
 
-    // pickDay ({ selectable, day }) {
-    //   if (!selectable) return false
-
-    //   if (this.isRange) return rangeOption.call(this, day)
-
-    //   this.day = day
-    //   this.internalDate = getFormattedDate(this.day, this.month, this.year)
-    // },
-
     pickDay ({ selectable, day }) {
       if (!selectable) return false
 
@@ -206,7 +196,7 @@ export default {
 
       if (hasDate__STRING || hasDate__OBJECT) {
         this.$emit('date-handler', this.internalDate)
-        this.$emit('show', false)
+        this.$emit('apply')
       }
     },
 
