@@ -1,6 +1,12 @@
 <template>
   <div id="app" class="vue-coe-calendar">
-    <div v-if="!showMonths && !showYears" class="container-calendar">
+    <div
+      v-if="!showMonths && !showYears"
+      class="container-calendar"
+      tabindex="0"
+      ref="container"
+      @click="setDateHandler"
+    >
       <coe-reset @reset-date="resetDate" />
 
       <coe-header
@@ -70,26 +76,6 @@ export default {
       showMonths: false,
       showYears: false
     }
-  },
-
-
-  /*
-   * flow:
-   * - creates a listener to be captured when the component is mounted
-   * - creates a listener that runs only once and listens for a 'keyup' event
-   * - this keyup event adds a listener in the keyup to the dataHandler
-   *
-   * - creates a listener to be captured before the component is destroyed
-   * - remove the listener
-   */
-  created () {
-    this.$on('hook:mounted', () => {
-      this.$once('keyup', window.addEventListener('keyup', this.dateHandler))
-
-      this.$on('hook:beforeDestroy', () => {
-        window.removeEventListener('keyup', this.dateHandler)
-      })
-    })
   },
 
   mounted () {
@@ -200,6 +186,13 @@ export default {
       }
     },
 
+    setDateHandler () {
+      window.addEventListener('keyup', this.dateHandler)
+      this.$refs.container.focus()
+
+      this.$on('hook:beforeDestroy', () => window.removeEventListener('keyup', this.dateHandler))
+    },
+
     apply () {
       const hasDate__STRING = typeof this.internalDate === 'string' && this.internalDate.length
       const hasDate__OBJECT = typeof this.internalDate === 'object' && Object.values(this.internalDate).filter(Boolean).length
@@ -229,10 +222,14 @@ export default {
   position: relative;
   border: 1px solid gray;
 
-  & > .container-calendar > .apply {
-    right: -1px;
-    width: 252px;
-    position: absolute;
+  & > .container-calendar {
+    outline: none;
+
+    & > .apply {
+      right: -1px;
+      width: 252px;
+      position: absolute;
+    }
   }
 }
 </style>
