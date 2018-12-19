@@ -72,6 +72,16 @@ export default {
     }
   },
 
+
+  /*
+   * flow:
+   * - creates a listener to be captured when the component is mounted
+   * - creates a listener that runs only once and listens for a 'keyup' event
+   * - this keyup event adds a listener in the keyup to the dataHandler
+   *
+   * - creates a listener to be captured before the component is destroyed
+   * - remove the listener
+   */
   created () {
     this.$on('hook:mounted', () => {
       this.$once('keyup', window.addEventListener('keyup', this.dateHandler))
