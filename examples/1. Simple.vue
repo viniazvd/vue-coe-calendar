@@ -12,6 +12,7 @@
       v-outside="() => showPicker = false"
       :date="date"
       @date-handler="v => date = v"
+      @apply="() => showPicker = false"
     />
 
   </div>

@@ -13,6 +13,7 @@
       is-range
       :date="date"
       @date-handler="v => date = v"
+      @apply="() => showPicker = false"
     />
 
   </div>
