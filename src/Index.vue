@@ -72,17 +72,13 @@ export default {
     }
   },
 
-  created () {
-    this.$on('hook:mounted', () => {
-      this.$once('keyup', window.addEventListener('keyup', this.dateHandler))
-
-      this.$on('hook:beforeDestroy', () => {
-        window.removeEventListener('keyup', this.dateHandler)
-      })
-    })
+  beforeDestroy () {
+    window.removeEventListener('keyup', this.dateHandler)
   },
 
   mounted () {
+    window.addEventListener('keyup', this.dateHandler)
+
     const date = new Date()
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' }
 
