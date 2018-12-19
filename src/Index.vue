@@ -91,7 +91,7 @@ export default {
 
     if (this.isRange) {
       this.internalDate = {
-        start: this.date || currentDate,
+        start: (isValid(this.date) && this.date) || currentDate,
         end: null
       }
     }
