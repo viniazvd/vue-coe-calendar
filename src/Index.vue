@@ -208,7 +208,7 @@ export default {
     resetDate () {
       this.day = null
       this.finalDay = null
-      this.internalDate = {}
+      this.internalDate = (this.isRange && {}) || ''
 
       this.$emit('date-handler', '')
     }
