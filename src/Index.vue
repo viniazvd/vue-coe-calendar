@@ -127,6 +127,9 @@ export default {
 
   methods: {
     dateHandler ({ key } = {}, handler) {
+      // to prevent unnecessarily entering in datehandler
+      if (!['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(key)) return
+
       if (handler === '<' || key === 'ArrowLeft') this.month--
       if ((handler === '<' || key === 'ArrowLeft') && !this.month) {
         this.month = 12
@@ -138,6 +141,9 @@ export default {
         this.month = 1
         this.year++
       }
+
+      if (key === 'ArrowUp') this.year++
+      if (key === 'ArrowDown') this.year--
     },
 
     pickDay ({ selectable, day }) {
