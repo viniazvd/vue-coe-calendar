@@ -151,6 +151,15 @@ export default {
 
       const date = (day = this.day) => getFormattedDate(day, this.month, this.year)
 
+      if (!this.isRange) {
+        this.day = day
+        this.internalDate = date()
+
+        return
+      }
+
+      console.log('aaa')
+
       if (this.isRange) {
         // case 1:
         // - initial date already selected
@@ -180,9 +189,6 @@ export default {
 
           this.internalDate = { start: this.internalDate.start, end: date(day) }
         }
-      } else {
-        this.day = day
-        this.internalDate = date()
       }
     },
 
