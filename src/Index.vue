@@ -128,7 +128,7 @@ export default {
   methods: {
     dateHandler ({ key } = {}, handler) {
       // to prevent unnecessarily entering in datehandler
-      if (!['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(key)) return
+      if (key && !handler && !['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(key)) return
 
       if (handler === '<' || key === 'ArrowLeft') this.month--
       if ((handler === '<' || key === 'ArrowLeft') && !this.month) {
