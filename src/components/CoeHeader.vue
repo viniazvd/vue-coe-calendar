@@ -31,7 +31,7 @@ export default {
   render (h, { props, listeners }) {
     const handler = (symbol, option) => h('span', {
       attrs: { class: 'monthHandler' },
-      on: { click: () => listeners['date-handler']({}, option) }
+      on: { click: () => listeners['date-handler']({ key: null }, option) }
     }, symbol)
 
     const decrementHandler = [ handler('‹', '<') ]
