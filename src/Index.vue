@@ -158,37 +158,33 @@ export default {
         return
       }
 
-      console.log('aaa')
+      // case 1:
+      // - initial date already selected
+      // - end date already selected
+      // - reset dates
+      // - set initial date
+      if (this.internalDate && this.internalDate.start && this.internalDate.end) {
+        this.internalDate = null
+        this.day = day
+        this.finalDay = null
 
-      if (this.isRange) {
-        // case 1:
-        // - initial date already selected
-        // - end date already selected
-        // - reset dates
-        // - set initial date
-        if (this.internalDate && this.internalDate.start && this.internalDate.end) {
-          this.internalDate = null
-          this.day = day
-          this.finalDay = null
+        this.internalDate = { start: date(), end: null }
 
-          this.internalDate = { start: date(), end: null }
+        // case 2:
+        // - no date selected yet
+        // - set the initial date
+      } else if (!this.day) {
+        this.day = day
 
-          // case 2:
-          // - no date selected yet
-          // - set the initial date
-        } else if (!this.day) {
-          this.day = day
+        this.internalDate = { start: date(), end: null }
 
-          this.internalDate = { start: date(), end: null }
+      // case 3:
+      // - initial date already selected
+      // - set the end date
+      } else {
+        this.finalDay = day
 
-        // case 3:
-        // - initial date already selected
-        // - set the end date
-        } else {
-          this.finalDay = day
-
-          this.internalDate = { start: this.internalDate.start, end: date(day) }
-        }
+        this.internalDate = { start: this.internalDate.start, end: date(day) }
       }
     },
 
