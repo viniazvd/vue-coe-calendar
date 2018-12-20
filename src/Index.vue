@@ -91,7 +91,7 @@ export default {
 
     if (this.isRange) {
       this.internalDate = {
-        start: this.date || currentDate,
+        start: inputDate || currentDate,
         end: null
       }
     }
@@ -99,19 +99,13 @@ export default {
 
   watch: {
     date (d) {
-      if (isValid(d)) {
-        this.day = +getDay(d)
-        this.month = +getMonth(d)
-        this.year = +getYear(d)
+      if (!isValid(d)) return
 
-        if (this.isRange) {
-          this.internalDate.start = d
-        } else {
-          this.internalDate = d
-        }
-      } else {
-        this.day = null
-      }
+      this.day = +getDay(d)
+      this.month = +getMonth(d)
+      this.year = +getYear(d)
+
+      this.internalDate = this.isRange ? { start: d } : d
     },
 
     internalDate: {
