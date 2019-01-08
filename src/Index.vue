@@ -39,6 +39,7 @@
 <script>
 // mixins
 import calendar from './support/mixins/calendar'
+import pickDay from './support/mixins/pickDay'
 
 // components
 import CoeReset from './components/CoeReset.vue'
@@ -48,13 +49,13 @@ import CoeDay from './components/CoeDay.vue'
 import CoeSelections from './components/CoeSelections.vue'
 
 // services
-import { getDay, getMonth, getYear, getDate, getFormattedDate } from './support/services'
+import { getDay, getMonth, getYear, getDate } from './support/services'
 import isValid from './support/services/isValid'
 
 export default {
   name: 'vue-coe-calendar',
 
-  mixins: [ calendar ],
+  mixins: [ calendar, pickDay ],
 
   components: { CoeReset, CoeHeader, CoeWeek, CoeDay, CoeSelections },
 
@@ -144,48 +145,6 @@ export default {
 
       if (key === 'ArrowUp') this.year++
       if (key === 'ArrowDown') this.year--
-    },
-
-    pickDay ({ selectable, day }) {
-      if (!selectable) return false
-
-      const date = (day = this.day) => getFormattedDate(day, this.month, this.year)
-
-      if (!this.isRange) {
-        this.day = day
-        this.internalDate = date()
-
-        return
-      }
-
-      // case 1:
-      // - initial date already selected
-      // - end date already selected
-      // - reset dates
-      // - set initial date
-      if (this.internalDate && this.internalDate.start && this.internalDate.end) {
-        this.internalDate = null
-        this.day = day
-        this.finalDay = null
-
-        this.internalDate = { start: date(), end: null }
-
-        // case 2:
-        // - no date selected yet
-        // - set the initial date
-      } else if (!this.day) {
-        this.day = day
-
-        this.internalDate = { start: date(), end: null }
-
-      // case 3:
-      // - initial date already selected
-      // - set the end date
-      } else {
-        this.finalDay = day
-
-        this.internalDate = { start: this.internalDate.start, end: date(day) }
-      }
     },
 
     setDateHandler () {
