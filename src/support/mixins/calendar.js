@@ -3,7 +3,7 @@ import { getMonth, getYear, getDate } from '../services/index'
 const getCalendar = {
   methods: {
     isAfterMonthEnd (i) {
-      return i - new Date(this.year, this.month - 1, 0).getDay() > this.lastDayCurrentMonth
+      return i - this.weekDay > this.lastDayCurrentMonth
     },
 
     isBeforeMonthStart (i) {
@@ -52,7 +52,8 @@ const getCalendar = {
               clicked: false
             }
           } else {
-            const day = i - this.weekDay
+            const weekDay = this.weekDay === 6 ? this.weekDay + 7 : this.weekDay
+            const day = i - weekDay
 
             return {
               day,
@@ -80,8 +81,7 @@ const getCalendar = {
       const diff = calendarStart.getDate() - day
       calendarStart.setDate(diff)
 
-      // in case the start date is further then the start of the month, set back with a week.
-      if (calendarStart.getDate() > date.getDate()) return calendarStart.setDate(calendarStart.getDate() - 7)
+      if (this.weekDay === -1) return calendarStart.getDate() + 7
 
       return calendarStart.getDate()
     },
@@ -95,7 +95,11 @@ const getCalendar = {
     },
 
     weekDay () {
-      return new Date(this.year, this.month - 1, 0).getDay()
+      const weekDay = new Date(this.year, this.month - 1, 0).getDay()
+
+      if (weekDay === 6) return weekDay - 7
+
+      return weekDay
     }
   }
 }
