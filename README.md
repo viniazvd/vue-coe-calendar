@@ -12,16 +12,6 @@
 
 <br>
 
-**Competitive Diferentials**
-<ul style='margin: 0; padding: 0; color: red; list-style-type: none;'>
-  <li></li>
-  <li></li>
-  <li></li>
-  <li></li>
-</ul>
-
-<br>
-
 **Install**
 
 `yarn add vue-coe-calendar`
