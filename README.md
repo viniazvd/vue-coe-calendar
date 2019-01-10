@@ -74,5 +74,7 @@ Name          | About
 -----         | -----
 date-handler  | 
 
-
+## Contribution
+- @VitorLuizC
+- @guibarscevicius
 
