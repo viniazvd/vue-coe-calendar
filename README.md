@@ -16,18 +16,6 @@
 
 `yarn add vue-coe-calendar`
 
-
-**Register in component (to import locally)**
-```vue
-<script>
-import VueCoeCalendar from 'vue-coe-calendar'
-
-export default {
-  components: { VueCoeCalendar }
-  ...
-</script>
-```
-
 <br>
 
 **Use**
