@@ -22,12 +22,6 @@
 
 <br>
 
-**Warning**
-<br>
-It's just a calendar, not a datepicker.
-
-<br>
-
 **Install**
 
 `yarn add vue-coe-calendar`
