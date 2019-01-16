@@ -3,20 +3,16 @@
     <div
       v-for="(day, index) in props.calendar"
       :key="index"
-      class="day"
+      :class="[
+        'day', {
+          '-selectable': day.selectable,
+          '-in-range': (day.isRange || day.clicked) && day.selectable,
+          '-hide': props.showDisabledDays && !day.selectable
+        }
+      ]"
+      @click="() => listeners['pick-day'](day)"
     >
-      <span
-        :class="[
-          'value', {
-            '-selectable': day.selectable,
-            '-in-range': (day.isRange || day.clicked) && day.selectable,
-            '-hide': props.showDisabledDays && !day.selectable
-          }
-        ]"
-        @click="() => listeners['pick-day'](day)"
-      >
-        {{ day.day }}
-      </span>
+      <span class="value">{{ day.day }}</span>
     </div>
   </div>
 </template>
@@ -24,6 +20,7 @@
 <script>
 export default {
   name: 'CoeDay',
+
   props: {
     calendar: {
       type: Array,
@@ -37,43 +34,45 @@ export default {
 
 <style lang="scss">
 .day-container {
-  width: 100%;
   display: flex;
   margin-top: 5px;
   text-align: center;
   flex-flow: row wrap;
 
   & > .day {
-    height: 0;
-    position: relative;
-    width: calc(100% / 7);
+    border-radius: 20px;
     flex: 0 calc(100% / 7);
-    margin-bottom: calc(100% / 7);
+    margin: { top: 2.5px; bottom: 2.5px; }
+    padding: { top: 10px; bottom: 10px; }
 
-    & > .value { color: gray; }
-
-    & > .-selectable {
-      color: red;
+    &.-selectable {
+      opacity: 0.7;
 
       &:hover {
-        padding: 5px;
-        border: 1px solid black;
+        opacity: 1;
+        border: unset;
+        color: #FFFFFF;
+        background: linear-gradient(135deg, #BC4CF7 0%, #7873EE 100%);
       }
     }
 
-    & > .-in-range {
-      padding: 5px;
-      color: red;
-      background-color: black;
+    &.-in-range {
+      opacity: 1;
+      color: #FFFFFF;
+      background: linear-gradient(135deg, #BC4CF7 0%, #7873EE 100%);
     }
 
-    & > .-in-range:not(.-selectable) {
-      padding: unset;
+    &.-in-range:not(.-selectable) {
       color: unset;
+      padding: unset;
       background-color: unset;
     }
 
-    & > .-hide { display: none; }
+    &.-hide { display: none; }
+
+    & > .value { font-size: 14px; }
   }
+
+  & > .day:not(.-selectable) { opacity: 0.2; }
 }
 </style>

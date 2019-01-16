@@ -21,7 +21,9 @@
 
       <coe-day v-bind="$attrs" :calendar="calendar" @pick-day="pickDay" />
 
-      <button class="apply" @click="apply">APLICAR</button>
+      <button class="apply" @click="apply">
+        <span class="text">APLICAR</span>
+      </button>
     </div>
 
     <coe-selections
@@ -177,8 +179,8 @@ export default {
 
 <style lang="scss">
 .vue-coe-calendar {
-  width: 250px;
-  height: auto;
+  width: 330px;
+  height: 400px;
   margin-top: 10px;
   position: relative;
   border: 1px solid gray;
@@ -187,9 +189,26 @@ export default {
     outline: none;
 
     & > .apply {
-      right: -1px;
-      width: 252px;
+      bottom: 0;
       position: absolute;
+
+      width: 100%;
+      display: flex;
+      justify-content: center;
+
+      height: 40px;
+      border-radius: 3px;
+      background: linear-gradient(135deg, #BC4CF7 0%, #7873EE 100%);
+
+      & > .text {
+        color: #FFFFFF;
+        font-family: Ubuntu;
+        font-size: 11px;
+        font-weight: 500;
+        line-height: 14px;
+        text-align: center;
+        text-shadow: 0 1px 2px 0 rgba(0,0,0,0.2);
+      }
     }
   }
 }
