@@ -10,7 +10,7 @@
   "umd:main": "dist/vue-coe-datepicker.js",
   "scripts": {
     "test": "yarn build && NODE_ENV=test jest",
-    "serve": "poi --serve examples/main.js",
+    "serve": "yarn build && poi --serve examples/main.js",
     "build": "bili"
   },
   "devDependencies": {
