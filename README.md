@@ -1,26 +1,58 @@
-# vue-coe-datepicker
+<h1 align="center">vue-coe-calendar ✅</h1>
 
-## Project setup
-```
-yarn install
+<p align="center">
+  <a href="#"><img src="https://img.shields.io/npm/l/vuelidation.svg" alt="License" target="_blank"></a>
+</p>
+
+<br>
+
+<p align="center">
+  ✨ <a href="#">Example</a>✨
+</p>
+
+<br>
+
+**Install**
+
+`yarn add vue-coe-calendar`
+
+<br>
+
+**Use**
+```vue
+<template>
+  <calendar :date="date" @date-handler="v => date = v" />
+</template>
+
+<script>
+import Calendar from 'vue-coe-calendar'
+
+export default {
+  components: { Calendar },
+
+  data () {
+    return { date: '' }
+  }
+}
+</script>
 ```
 
-### Compiles and hot-reloads for development
-```
-yarn run serve
-```
+<br>
 
-### Compiles and minifies for production
-```
-yarn run build
-```
+## Props
 
-### Run your tests
-```
-yarn run test
-```
+Name                |   type               | required  | About
+-----               | -------------------- | --------- | ------
+date                |  `(String, Object)`  |  `true`   | 
+isRange             |  Boolean             | `false`   | 
 
-### Lints and fixes files
-```
-yarn run lint
-```
+## Events
+
+Name          | About
+-----         | -----
+date-handler  | 
+
+## Contribution
+- @VitorLuizC
+- @guibarscevicius
+
