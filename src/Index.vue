@@ -19,7 +19,7 @@
 
       <coe-week />
 
-      <coe-day v-bind="$attrs" :calendar="calendar" @pick-day="pickDay" />
+      <coe-day v-bind="$attrs" :date="internalDate" :month="month" :calendar="calendar" @pick-day="pickDay" />
 
       <button class="apply" @click="apply">
         <span class="text">APLICAR</span>
