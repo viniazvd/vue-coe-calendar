@@ -19,7 +19,14 @@
 
       <coe-week />
 
-      <coe-day v-bind="$attrs" :date="internalDate" :month="month" :calendar="calendar" @pick-day="pickDay" />
+      <coe-day
+        :days-before-month="lastDayLastMonth - firstDayBeforeMonth + 1"
+        :date="internalDate"
+        :month="month"
+        :calendar="calendar"
+        v-bind="$attrs"
+        @pick-day="pickDay"
+      />
 
       <button class="apply" @click="apply">
         <span class="text">APLICAR</span>

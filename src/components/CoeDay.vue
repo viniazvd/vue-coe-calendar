@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { getDay, getMonth } from '../support/services'
+import { getDay, getMonth, getDataPerRow, getSelectedsPerRow } from '../support/services'
 
 export default {
   name: 'CoeDay',
@@ -46,6 +46,7 @@ export default {
       required: true,
       validator: c => c.length === 42
     },
+    daysBeforeMonth: Number,
     showDisabledDays: Boolean
   },
 
@@ -69,25 +70,19 @@ export default {
 
   methods: {
     getPosition (row) {
-      const days = this.calendar
-        .slice((row  - 1) * 7, ((row  - 1) + 1) * 7)
-        .filter(row => row.month === this.month)
+      if (!this.date.end) return { 'width': 0 }
 
-      const daysPerRow = days.reduce((acc, { isRange, selectable }) => {
-        if (isRange && selectable) acc += isRange
+      // calendar data sliced per row
+      const dataPerRow = getDataPerRow(this.calendar, row, this.month)
 
-       return acc
-      }, 0)
+      // selected days per row
+      const selectedPerRow = getSelectedsPerRow(dataPerRow)
 
-      const dayWidth = 14
-      const width = (this.startDay === this.endDay && this.startMonth === this.endMonth) ? 0 : (daysPerRow * dayWidth)
+      // pixel size
+      const daySize = 46
 
-      const hasStartDate = days.some(({ day, month }) => day === this.startDay && month === this.startMonth)
-      const hasEndDate = days.some(({ day, month }) => day === this.endDay && month === this.endMonth)
-
-      const firstDay = days.filter(({ day }) => day < this.startDay).length
-
-      const left = this.getLeftPosition(hasEndDate, hasStartDate, firstDay, daysPerRow, days)
+      const width = this.getWidth(selectedPerRow)
+      const left = this.getLeft(row, dataPerRow) * daySize
 
       return {
         'width': width + '%',
@@ -95,34 +90,38 @@ export default {
       }
     },
 
-    getLeftPosition (hasEndDate, hasStartDate, firstDay, daysPerRow, days) {
-      const itemSize = 46
+    getWidth (selectedPerRow) {
+      const dayWidth = 14
+      const sameDay = this.startDay === this.endDay
+      const sameMonth = this.startMonth === this.endMonth
 
-      if (days.length < 7) {
-        if (hasStartDate && !hasEndDate) {
-          return (7 - daysPerRow) * itemSize
-        } else if (!hasStartDate && !hasEndDate && firstDay) {
-          return (7 - daysPerRow) * itemSize
-        } else {
-          return 0
-        }
+      return sameDay && sameMonth ? 0 : selectedPerRow * dayWidth
+    },
+
+    getLeft (row, dataPerRow) {
+      // if row contains start date
+      const hasStartDate = dataPerRow.some(({ day, month }) => day === this.startDay && month === this.startMonth)
+
+      // if row contains end date
+      const hasEndDate = dataPerRow.some(({ day, month }) => day === this.endDay && month === this.endMonth)
+
+      // qnt of selectable days shorter than the start date
+      const diff = dataPerRow.filter(({ day }) => day < this.startDay).length
+
+      // fix diff of the line (1, 5 or 6) that does not have the 7 days of the current month (last month or previous month)
+      const diffFixs = this.daysBeforeMonth + diff
+
+      if (dataPerRow.length === 7) {
+        if (hasStartDate && hasEndDate || hasStartDate && !hasEndDate) return diff
+        if (hasStartDate && hasEndDate && row === 1) return this.daysBeforeMonth > 0 ? diffFixs : diff
       }
 
-      if ((7 - daysPerRow) === 0) return 0
-
-      if (days.length < 7 && !hasEndDate && !hasStartDate) return (7 - daysPerRow) * itemSize
-
-      if (hasEndDate && hasStartDate) {
-        if (this.month === this.endMonth) {
-          return 0
-        } else {
-          return firstDay * itemSize
-        }
+      if (dataPerRow.length < 7) {
+        if (hasStartDate && hasEndDate || hasStartDate && !hasEndDate) return row === 1 ? diffFixs : diff
+        if (!hasStartDate && hasEndDate) return row > 1 ? 0 : this.daysBeforeMonth
       }
 
-      if (hasStartDate && !hasEndDate) return firstDay * itemSize
-      if (this.startMonth !== this.endMonth) return 0
-      if (!hasStartDate && hasEndDate) return this.startDay > this.endDay ? (7 - daysPerRow) * itemSize : 0
+      if (!hasStartDate && !hasEndDate) return row === 1 ? this.daysBeforeMonth : 0
     }
   }
 }
