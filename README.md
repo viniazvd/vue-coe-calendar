@@ -54,5 +54,5 @@ date-handler  |
 
 ## Contribution
 - @VitorLuizC
-- @guibarscevicius
+- @convenia team
 
