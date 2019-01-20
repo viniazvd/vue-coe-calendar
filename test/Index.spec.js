@@ -1,10 +1,10 @@
 import { mount, shallowMount } from '@vue/test-utils'
 
-import { getMonth, getYear } from '../src/support/services'
-import { getCalendar } from '../src/support/services/calendar'
+import { getMonth, getYear } from '../src/support/services/index.js'
+// import { getCalendar } from '../src/support/services/calendar'
 import { equals } from './services'
 
-import VueCoeCalendar from '../'
+import VueCoeCalendar from '../src/Index.vue'
 import CoeDay from '../src/components/CoeDay.vue'
 import CoeHeader from '../src/components/CoeHeader.vue'
 import CoeReset from '../src/components/CoeReset.vue'
@@ -19,37 +19,9 @@ describe('VueCoeCalendar', () => {
     expect (wrapper.isVueInstance()).toBeTruthy()
   })
 
-  test('is not opened', () => {
-    const wrapper = shallowMount(VueCoeCalendar, {
-      propsData: {
-        date: '',
-        show: false
-      }
-    })
-
-    expect(wrapper.vm.show).toBe(false)
-    expect(wrapper.isEmpty()).toBe(true)
-  })
-
-  test('is opened', () => {
-    const wrapper = shallowMount(VueCoeCalendar, {
-      propsData: {
-        date: '',
-        show: true
-      }
-    })
-
-    expect(wrapper.vm.show).toBe(true)
-    expect(wrapper.isVisible()).toBe(true)
-    expect(wrapper.find('.vue-coe-calendar').isVisible()).toBe(true)
-  })
-
   test('wrapper class name', () => {
     const wrapper = shallowMount(VueCoeCalendar, {
-      propsData: {
-        date: '',
-        show: true
-      }
+      propsData: { date: '' }
     })
 
     expect(wrapper.attributes().class).toBe('vue-coe-calendar')
@@ -59,11 +31,10 @@ describe('VueCoeCalendar', () => {
 
   test('wrapper is', () => {
     const wrapper = shallowMount(VueCoeCalendar, {
-      propsData: {
-        date: '',
-        show: true
-      }
+      propsData: { date: '' }
     })
+
+    wrapper.setData({ showMonths: false, showYears: false })
 
     expect(wrapper.contains('div')).toBe(true)
     expect(wrapper.contains(CoeDay)).toBe(true)
@@ -84,10 +55,7 @@ describe('VueCoeCalendar', () => {
 
   test('is range', () => {
     const wrapper = shallowMount(VueCoeCalendar, {
-      propsData: {
-        date: '',
-        isRange: true
-      }
+      propsData: { date: '', isRange: true }
     })
 
     expect(wrapper.vm.isRange).toBe(true)
@@ -96,9 +64,7 @@ describe('VueCoeCalendar', () => {
 
   test('is not range', () => {
     const wrapper = shallowMount(VueCoeCalendar, {
-      propsData: {
-        date: ''
-      }
+      propsData: { date: '' }
     })
 
     expect(wrapper.vm.isRange).toBe(false)
@@ -107,10 +73,7 @@ describe('VueCoeCalendar', () => {
 
   test('default date', () => {
     const wrapper = shallowMount(VueCoeCalendar, {
-      propsData: {
-        date: '',
-        show: true
-      }
+      propsData: { date: '' }
     })
 
     const date = new Date()
@@ -125,49 +88,37 @@ describe('VueCoeCalendar', () => {
     expect(wrapper.vm.year).toEqual(year)
   })
 
-  test('internalDate without range', () => {
+  test('default internalDate', () => {
     const wrapper = shallowMount(VueCoeCalendar, {
-      propsData: {
-        date: '',
-        show: true
-      }
+      propsData: { date: '' }
     })
 
     expect(wrapper.vm.internalDate).toEqual('')
   })
 
-  test('internalDate with range', () => {
-    const wrapper = shallowMount(VueCoeCalendar, {
-      propsData: {
-        date: '',
-        show: true,
-        isRange: true
-      }
-    })
-
-    expect(wrapper.vm.internalDate).toEqual({
-      start: null,
-      end: null
-    })
-  })
-
   test('default calendar', () => {
     const wrapper = shallowMount(VueCoeCalendar, {
-      propsData: {
-        date: '',
-        show: true
-      }
+      propsData: { date: '' }
     })
 
-    const date = new Date()
-    const options = { day: '2-digit', month: '2-digit', year: 'numeric' }
+    wrapper.setData({ month: 1, year: 2019 })
 
-    const currentDate = date.toLocaleDateString('pt-BR', options)
+    // const date = new Date()
+    // const options = { day: '2-digit', month: '2-digit', year: 'numeric' }
 
-    const month = +getMonth(currentDate)
-    const year = +getYear(currentDate)
+    // const currentDate = date.toLocaleDateString('pt-BR', options)
 
-    const calendar = getCalendar.call(wrapper.vm, year, month - 1)
+    // console.log('currentDate', currentDate)
+
+    // const month = +getMonth(currentDate)
+    // const year = +getYear(currentDate)
+
+    // fix adapt getMonth and getYear to acept '-' or '/'
+
+    const month = +'1'
+    const year = +'2019'
+
+    const calendar = wrapper.vm.getCalendar(year, month - 1)
     const isEqual = equals(calendar, wrapper.vm.calendar)
 
     expect(isEqual).toBe(true)
@@ -175,10 +126,7 @@ describe('VueCoeCalendar', () => {
 
   test('passing a date', () => {
     const wrapper = shallowMount(VueCoeCalendar, {
-      propsData: {
-        date: '15/12/2017',
-        show: true
-      }
+      propsData: { date: '15/12/2017' }
     })
 
     expect(wrapper.vm.day).toBe(15)
@@ -188,10 +136,7 @@ describe('VueCoeCalendar', () => {
 
   test('change month: dateHandler = "<"', () => {
     const wrapper = mount(VueCoeCalendar, {
-      propsData: {
-        date: '29/01/1989',
-        show: true
-      }
+      propsData: { date: '29/01/1989' }
     })
 
     wrapper
@@ -205,10 +150,7 @@ describe('VueCoeCalendar', () => {
 
   test('change month: list', () => {
     const wrapper = mount(VueCoeCalendar, {
-      propsData: {
-        date: '29/01/1989',
-        show: true
-      }
+      propsData: { date: '29/01/1989' }
     })
 
     wrapper
@@ -229,10 +171,7 @@ describe('VueCoeCalendar', () => {
 
   test('change year: list', () => {
     const wrapper = mount(VueCoeCalendar, {
-      propsData: {
-        date: '29/01/1989',
-        show: true
-      }
+      propsData: { date: '29/01/1989' }
     })
 
     wrapper
@@ -253,10 +192,7 @@ describe('VueCoeCalendar', () => {
 
   test('reset date', () => {
     const wrapper = mount(VueCoeCalendar, {
-      propsData: {
-        date: '29/01/1989',
-        show: true
-      }
+      propsData: { date: '29/01/1989' }
     })
 
     wrapper.find('div > div > div > button').trigger('click')
@@ -268,10 +204,7 @@ describe('VueCoeCalendar', () => {
 
   test('pick day', () => {
     const wrapper = mount(VueCoeCalendar, {
-      propsData: {
-        date: '29/01/1989',
-        show: true
-      }
+      propsData: { date: '29/01/1989' }
     })
 
     wrapper
@@ -286,10 +219,7 @@ describe('VueCoeCalendar', () => {
 
   test('pick a not selectable day', () => {
     const wrapper = mount(VueCoeCalendar, {
-      propsData: {
-        date: '29/01/1989',
-        show: true
-      }
+      propsData: { date: '29/01/1989' }
     })
 
     wrapper
@@ -304,11 +234,7 @@ describe('VueCoeCalendar', () => {
 
   test('showDisabledDays is true', () => {
     const wrapper = mount(VueCoeCalendar, {
-      propsData: {
-        date: '16/12/2018',
-        show: true,
-        showDisabledDays: true
-      }
+      propsData: { date: '16/12/2018', showDisabledDays: true }
     })
 
     const day = wrapper
