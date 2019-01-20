@@ -5,7 +5,12 @@
         v-for="row in 6"
         :key="row"
         :style="getPosition(row)"
-        class="row"
+        :class="[
+          'row', {
+            '-start-day': hasStartDate(row),
+            '-end-day': hasEndDate(row)
+          }
+        ]"
       >
         &nbsp;
       </div>
@@ -73,7 +78,7 @@ export default {
       if (!this.date.end) return { 'width': 0 }
 
       // calendar data sliced per row
-      const dataPerRow = getDataPerRow(this.calendar, row, this.month)
+      const dataPerRow = this.getDataPerRow(row)
 
       // selected days per row
       const selectedPerRow = getSelectedsPerRow(dataPerRow)
@@ -96,6 +101,18 @@ export default {
       const sameMonth = this.startMonth === this.endMonth
 
       return sameDay && sameMonth ? 0 : selectedPerRow * dayWidth
+    },
+
+    getDataPerRow (row) {
+      return getDataPerRow(this.calendar, row, this.month)
+    },
+
+    hasStartDate (row) {
+      return this.getDataPerRow(row).some(({ day, month }) => day === this.startDay && month === this.startMonth)
+    },
+
+    hasEndDate (row) {
+      return this.getDataPerRow(row).some(({ day, month }) => day === this.endDay && month === this.endMonth)
     },
 
     getLeft (row, dataPerRow) {
@@ -141,20 +158,30 @@ export default {
       padding: { top: 10px; bottom: 10px; }
       margin: { top: 2.5px; bottom: 2.5px; }
       background: linear-gradient(135deg, #BC4CF7 0%, #7873EE 100%);
+
+      &.-start-day {
+        border-top-left-radius: 20px;
+        border-bottom-left-radius: 20px;
+      }
+
+      &.-end-day {
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+      }
     }
   }
 
   & > .day-container {
     display: flex;
-    margin-top: 5px;
+    margin-top: 7px;
     text-align: center;
     flex-flow: row wrap;
 
     & > .day {
       border-radius: 20px;
       flex: 0 calc(100% / 7);
-      margin: { top: 2.5px; bottom: 2.5px; }
       padding: { top: 10px; bottom: 10px; }
+      margin: { top: 2.5px; bottom: 2.5px; }
 
       &.-selectable {
         z-index: 1;
@@ -171,7 +198,6 @@ export default {
       &.-in-range {
         opacity: 1;
         color: #FFFFFF;
-        // background: linear-gradient(135deg, #BC4CF7 0%, #7873EE 100%);
       }
 
       &.-in-range:not(.-selectable) {
