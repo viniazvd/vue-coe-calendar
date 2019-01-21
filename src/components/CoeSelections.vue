@@ -71,19 +71,16 @@ export default {
 
 <style lang="scss">
 .options-selection {
-  width: 100%;
   max-height: 400px;
-  overflow-x: hidden;
 
   & > .months {
     display: flex;
     flex-direction: column;
 
     & > .month {
-      width: 100%;
       opacity: 0.7;
       text-align: center;
-      padding: { top: 5px; bottom: 5px; }
+      padding: { top: 8px; bottom: 8px; }
 
       & > .value {}
 
@@ -99,8 +96,6 @@ export default {
       color: white;
       background: linear-gradient(135deg, #BC4CF7 0%, #7873EE 100%);
     }
-
-    & :first-child { padding-top: 9px; }
   }
 
   & > .years {
