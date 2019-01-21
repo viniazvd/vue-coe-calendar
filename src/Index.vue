@@ -158,7 +158,7 @@ export default {
 
     setDateHandler () {
       window.addEventListener('keyup', this.dateHandler)
-      this.$refs.container.focus()
+      this.$refs.container && this.$refs.container.focus()
 
       this.$on('hook:beforeDestroy', () => window.removeEventListener('keyup', this.dateHandler))
     },
