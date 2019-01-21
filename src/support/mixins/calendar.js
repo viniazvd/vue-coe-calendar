@@ -37,7 +37,7 @@ const getCalendar = {
 
           return {
             day,
-            month: month,
+            month,
             selectable: false,
             isRange: this.getRange(day, month),
             clicked: false
