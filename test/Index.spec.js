@@ -199,7 +199,7 @@ describe('VueCoeCalendar', () => {
 
     expect(wrapper.vm.day).toEqual(null)
     expect(wrapper.vm.finalDay).toEqual(null)
-    expect(wrapper.vm.internalDate).toEqual({})
+    expect(wrapper.vm.internalDate).toEqual('')
   })
 
   test('pick day', () => {
@@ -239,12 +239,10 @@ describe('VueCoeCalendar', () => {
 
     const day = wrapper
       .find('.container-calendar')
+      .find('.coe-day')
       .find('.day-container')
-      .findAll('div').at(0)
-      .find('span')
+      .find('.day')
 
-
-    expect(day.text()).toBe('26')
     expect(day.classes()).toContain('-hide')
   })
 })
