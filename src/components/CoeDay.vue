@@ -128,17 +128,13 @@ export default {
       // fix diff of the line (1, 5 or 6) that does not have the 7 days of the current month (last month or previous month)
       const diffFixs = this.daysBeforeMonth + diff
 
-      if (dataPerRow.length === 7) {
-        if (hasStartDate && hasEndDate || hasStartDate && !hasEndDate) return diff
-        if (hasStartDate && hasEndDate && row === 1) return this.daysBeforeMonth > 0 ? diffFixs : diff
-      }
+      if (dataPerRow.length === 7 && hasStartDate && hasEndDate && row === 1) return this.daysBeforeMonth > 0 ? diffFixs : diff
 
-      if (dataPerRow.length < 7) {
-        if (hasStartDate && hasEndDate || hasStartDate && !hasEndDate) return row === 1 ? diffFixs : diff
-        if (!hasStartDate && hasEndDate) return row > 1 ? 0 : this.daysBeforeMonth
-      }
+      if (dataPerRow.length < 7 && !hasStartDate && hasEndDate) return row > 1 ? 0 : this.daysBeforeMonth
 
-      if (!hasStartDate && !hasEndDate) return row === 1 ? this.daysBeforeMonth : 0
+      if (hasStartDate && hasEndDate || hasStartDate && !hasEndDate) return row === 1 ? diffFixs : diff
+
+      return row === 1 ? this.daysBeforeMonth : 0
     }
   }
 }
