@@ -72,7 +72,7 @@ export default {
 <style lang="scss">
 .options-selection {
   width: 100%;
-  max-height: 317px;
+  max-height: 400px;
   overflow-x: hidden;
 
   & > .months {
@@ -81,15 +81,24 @@ export default {
 
     & > .month {
       width: 100%;
+      opacity: 0.7;
       text-align: center;
       padding: { top: 5px; bottom: 5px; }
 
       & > .value {}
 
-      &:hover { background-color: gray; }
+      &:hover {
+        opacity: 1;
+        color: white;
+        background: linear-gradient(135deg, #BC4CF7 0%, #7873EE 100%);
+      }
     }
 
-    & .-selected { background-color: red; }
+    & .-selected {
+      opacity: 1;
+      color: white;
+      background: linear-gradient(135deg, #BC4CF7 0%, #7873EE 100%);
+    }
 
     & :first-child { padding-top: 9px; }
   }
@@ -100,15 +109,24 @@ export default {
 
     & > .year {
       width: 100%;
+      opacity: 0.7;
       text-align: center;
       padding: { top: 5px; bottom: 5px; }
 
       & > .value {}
 
-      &:hover { background-color: gray; }
+      &:hover {
+        opacity: 1;
+        color: white;
+        background: linear-gradient(135deg, #BC4CF7 0%, #7873EE 100%);
+      }
     }
 
-    & .-selected { background-color: red; }
+    & .-selected {
+      opacity: 1;
+      color: white;
+      background: linear-gradient(135deg, #BC4CF7 0%, #7873EE 100%);
+    }
 
     & :first-child { padding-top: 9px; }
   }
