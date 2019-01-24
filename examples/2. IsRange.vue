@@ -34,4 +34,4 @@ export default {
 }
 </script>
 
-<style src="../dist/vue-coe-datepicker.css" />
+<style src="../dist/vue-coe-calendar.css" />
