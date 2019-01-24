@@ -24,10 +24,12 @@
           'day', {
             '-selectable': day.selectable,
             '-in-range': (day.isRange || day.clicked) && day.selectable,
+            '-pre-range': !date.end && day.selectable && isBetween(startDay, over, day.day),
             '-hide': showDisabledDays && !day.selectable
           }
         ]"
         @click="$emit('pick-day', day)"
+        @mouseover="setEndDate"
       >
         <span class="value">{{ day.day }}</span>
       </div>
@@ -36,7 +38,7 @@
 </template>
 
 <script>
-import { getDay, getMonth, getDataPerRow, getSelectedsPerRow } from '../support/services'
+import { getDay, getMonth, getDataPerRow, getSelectedsPerRow, isBetween } from '../support/services'
 
 export default {
   name: 'CoeDay',
@@ -53,6 +55,12 @@ export default {
     },
     daysBeforeMonth: Number,
     showDisabledDays: Boolean
+  },
+
+  data () {
+    return {
+      over: null
+    }
   },
 
   computed: {
@@ -74,8 +82,10 @@ export default {
   },
 
   methods: {
+    isBetween,
+
     getPosition (row) {
-      if (!this.date.end) return { 'width': 0 }
+      // if (!this.date.end) return { 'width': 0 }
 
       // calendar data sliced per row
       const dataPerRow = this.getDataPerRow(row)
@@ -89,6 +99,8 @@ export default {
       const width = this.getWidth(selectedPerRow)
       const left = this.getLeft(row, dataPerRow) * daySize
 
+      // console.log(row, width, left)
+
       return {
         'width': width + '%',
         'left': left + 'px'
@@ -97,7 +109,7 @@ export default {
 
     getWidth (selectedPerRow) {
       const dayWidth = 14
-      const sameDay = this.startDay === this.endDay
+      const sameDay = this.startDay === (this.over || this.endDay)
       const sameMonth = this.startMonth === this.endMonth
 
       return sameDay && sameMonth ? 0 : selectedPerRow * dayWidth
@@ -107,12 +119,20 @@ export default {
       return getDataPerRow(this.calendar, row, this.month)
     },
 
+    setEndDate (e) {
+      const day = e.fromElement.innerHTML
+
+      if (day.startsWith('<')) return false
+
+      this.over = +day
+    },
+
     hasStartDate (row) {
       return this.getDataPerRow(row).some(({ day, month }) => day === this.startDay && month === this.startMonth)
     },
 
     hasEndDate (row) {
-      return this.getDataPerRow(row).some(({ day, month }) => day === this.endDay && month === this.endMonth)
+      return this.getDataPerRow(row).some(({ day, month }) => day === (this.over || this.endDay) && month === this.endMonth)
     },
 
     getLeft (row, dataPerRow) {
@@ -120,7 +140,7 @@ export default {
       const hasStartDate = dataPerRow.some(({ day, month }) => day === this.startDay && month === this.startMonth)
 
       // if row contains end date
-      const hasEndDate = dataPerRow.some(({ day, month }) => day === this.endDay && month === this.endMonth)
+      const hasEndDate = dataPerRow.some(({ day, month }) => day === (this.over || this.endDay) && month === this.endMonth)
 
       // qnt of selectable days shorter than the start date
       const diff = dataPerRow.filter(({ day }) => day < this.startDay).length
@@ -200,6 +220,11 @@ export default {
         color: unset;
         padding: unset;
         background-color: unset;
+      }
+
+      &.-pre-range {
+        color: #FFFFFF;
+        background: linear-gradient(135deg, #BC4CF7 0%, #7873EE 70%);
       }
 
       &.-hide { opacity: 0 !important; }
