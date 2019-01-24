@@ -41,6 +41,13 @@ export function getDataPerRow (calendar, row, month) {
     .filter(row => row.month === month)
 }
 
+export function isBetween (x, y, λ) {
+  const min = Math.min.apply(Math, [x, y])
+  const max = Math.max.apply(Math, [x, y])
+
+  return λ >= min && λ <= max
+}
+
 export function getSelectedsPerRow (dataPerRow) {
   return dataPerRow.reduce((acc, { isRange, selectable }) => {
     if (isRange && selectable) acc += isRange
