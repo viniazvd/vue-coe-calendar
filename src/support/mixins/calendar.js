@@ -11,12 +11,11 @@ const getCalendar = {
     },
 
     getRange (day, month) {
-      if (!this.internalDate) return false
-      if (!this.internalDate.start || !this.internalDate.end) return false
+      if (!this.internalDate || !this.internalDate.start) return false
       if (!this.isRange) return day === this.day && (month + 1) === this.initMonth
 
       const startDate = getDate(this.internalDate.start)
-      const finalDate = getDate(this.internalDate.end)
+      const finalDate = getDate(this.internalDate.over || this.internalDate.end)
       const loopDate = +new Date(this.year, (this.month - 1), day)
 
       return (loopDate >= startDate && loopDate <= finalDate) || (loopDate <= startDate && loopDate >= finalDate)

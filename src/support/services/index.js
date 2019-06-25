@@ -35,7 +35,7 @@ export function getDate (date) {
   return +new Date(getYear(date), (getMonth(date) - 1), getDay(date))
 }
 
-export function getDataPerRow (calendar, row, month) {
+export function getDatePerRow (calendar, row, month) {
   return calendar
     .slice((row  - 1) * 7, ((row  - 1) + 1) * 7)
     .filter(row => row.month === month)

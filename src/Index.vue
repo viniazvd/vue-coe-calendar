@@ -26,6 +26,7 @@
         :calendar="calendar"
         v-bind="$attrs"
         @pick-day="pickDay"
+        @set:over-day="setOverDay"
       />
 
       <button class="apply" @click="apply">
@@ -58,7 +59,7 @@ import CoeDay from './components/CoeDay.vue'
 import CoeSelections from './components/CoeSelections.vue'
 
 // services
-import { getDay, getMonth, getYear, getDate } from './support/services'
+import { getDay, getMonth, getYear, getDate, getFormattedDate } from './support/services'
 import isValid from './support/services/isValid'
 
 export default {
@@ -102,7 +103,8 @@ export default {
     if (this.isRange) {
       this.internalDate = {
         start: inputDate || currentDate,
-        end: null
+        end: null,
+        over: null
       }
     }
   },
@@ -120,8 +122,12 @@ export default {
 
     internalDate: {
       handler ({ start, end }) {
-        if (start && end && (getDate(start) > getDate(end))) {
-          this.internalDate = { start: end, end: start }
+        if (start && end && (getDate(start) > getDate(end)) && this.initMonth === this.month) {
+          this.internalDate = {
+            start: end,
+            end: start,
+            over: null //end
+          }
         }
       }
     }
@@ -161,6 +167,12 @@ export default {
       this.$refs.container && this.$refs.container.focus()
 
       this.$on('hook:beforeDestroy', () => window.removeEventListener('keyup', this.dateHandler))
+    },
+
+    setOverDay (over) {
+      // if (!this.internalDate || !this.internalDate.hasOwnProperty('end')) return false
+
+      this.internalDate.over = getFormattedDate(over, this.month, this.year)
     },
 
     apply () {

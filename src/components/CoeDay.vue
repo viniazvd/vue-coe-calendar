@@ -4,13 +4,13 @@
       <div
         v-for="row in 6"
         :key="row"
-        :style="getPosition(row)"
-        :class="[
-          'row', {
-            '-start-day': hasStartDate(row),
-            '-end-day': hasEndDate(row)
-          }
-        ]"
+        :style="getStyles(row)"
+        :class="{
+          '-selected': over,
+          '-pre-selected': !over,
+          '-start-day': hasStartDate(row),
+          '-end-day': hasEndDate(row)
+        }"
       >
         &nbsp;
       </div>
@@ -24,12 +24,11 @@
           'day', {
             '-selectable': day.selectable,
             '-in-range': (day.isRange || day.clicked) && day.selectable,
-            '-pre-range': !date.end && day.selectable && isBetween(startDay, over, day.day),
-            '-hide': showDisabledDays && !day.selectable
+            '-hide': showDisabledDays && !day.selectable,
           }
         ]"
-        @click="$emit('pick-day', day)"
-        @mouseover="setEndDate"
+        @click="$emit('pick-day', Object.assign(day, over))"
+        @mouseover="e => day.selectable && setEndDate(e)"
       >
         <span class="value">{{ day.day }}</span>
       </div>
@@ -38,7 +37,7 @@
 </template>
 
 <script>
-import { getDay, getMonth, getDataPerRow, getSelectedsPerRow, isBetween } from '../support/services'
+import { getDay, getMonth, getDatePerRow, getSelectedsPerRow, isBetween } from '../support/services'
 
 export default {
   name: 'CoeDay',
@@ -64,12 +63,33 @@ export default {
   },
 
   computed: {
+    // style settings for each line
+    style () {
+      if (!this.date.end && !this.date.over) {
+        return Array
+          .from({ length: 6 })
+          .reduce((acc, item, index) => {
+            acc[index + 1] = { 'width': '0px', 'left': '0px' }
+
+            return acc
+          }, {})
+      }
+
+      return Array
+        .from({ length: 6 })
+        .reduce((acc, item, index) => {
+          acc[index + 1] = this.getPosition(index + 1)
+
+          return acc
+        }, {})
+    },
+
     startDay () {
       return +getDay(this.date.start)
     },
 
     endDay () {
-      return +getDay(this.date.end)
+      return this.date.end ? +getDay(this.date.end) : this.over
     },
 
     startMonth () {
@@ -84,77 +104,117 @@ export default {
   methods: {
     isBetween,
 
-    getPosition (row) {
-      // if (!this.date.end) return { 'width': 0 }
+    getStyles (row) {
+      const sizes = this.style ? this.style[row] : { width: 0, left: 0 };
+      const opacity = this.date.over ? { opacity: 0.5 } : {}
 
+      return { ...sizes, ...opacity }
+    },
+
+    setEndDate (e) {
+      if (this.date.end || !e.target.children.length) return false
+
+      this.over = +(e.target.children[0].innerHTML)
+
+      this.$emit('set:over-day', this.over)
+    },
+
+    getPosition (row) {
       // calendar data sliced per row
-      const dataPerRow = this.getDataPerRow(row)
+      const dataPerRow = this.getDatePerRow(row)
 
       // selected days per row
       const selectedPerRow = getSelectedsPerRow(dataPerRow)
 
       // pixel size
-      const daySize = 46
-
-      const width = this.getWidth(selectedPerRow)
-      const left = this.getLeft(row, dataPerRow) * daySize
-
-      // console.log(row, width, left)
+      const daySizePixel = 46
 
       return {
-        'width': width + '%',
-        'left': left + 'px'
+        'width': this.getWidth(row, selectedPerRow) + '%',
+        'left': this.getLeft(row, dataPerRow) * daySizePixel + 'px'
       }
     },
 
-    getWidth (selectedPerRow) {
-      const dayWidth = 14
-      const sameDay = this.startDay === (this.over || this.endDay)
-      const sameMonth = this.startMonth === this.endMonth
+    getWidth (row, selectedPerRow) {
+      const daySizePixel = 14
+      const startDayEqualEnd = this.startDay === this.endDay
+      const startMonthEqualEnd = this.startMonth === this.endMonth
 
-      return sameDay && sameMonth ? 0 : selectedPerRow * dayWidth
+      return startDayEqualEnd && startMonthEqualEnd
+        ? 0
+        : selectedPerRow * daySizePixel
     },
 
-    getDataPerRow (row) {
-      return getDataPerRow(this.calendar, row, this.month)
+    getDatePerRow (row) {
+      return getDatePerRow(this.calendar, row, this.month)
     },
 
-    setEndDate (e) {
-      const day = e.fromElement.innerHTML
-
-      if (day.startsWith('<')) return false
-
-      this.over = +day
-    },
-
+    // if row contains start date
     hasStartDate (row) {
-      return this.getDataPerRow(row).some(({ day, month }) => day === this.startDay && month === this.startMonth)
+      return this.getDatePerRow(row).some(({ day, month }) => {
+        return day === this.startDay // && month === this.startMonth
+      })
     },
 
+    // if row contains end date
     hasEndDate (row) {
-      return this.getDataPerRow(row).some(({ day, month }) => day === (this.over || this.endDay) && month === this.endMonth)
+      return this.getDatePerRow(row).some(({ day, month }) => {
+        return day === this.over // && month === this.endMonth
+      })
     },
 
     getLeft (row, dataPerRow) {
-      // if row contains start date
-      const hasStartDate = dataPerRow.some(({ day, month }) => day === this.startDay && month === this.startMonth)
+      const hasStartDate = this.hasStartDate(row)
+      const hasEndDate = this.hasEndDate(row)
+      const ranges = dataPerRow.filter(({ isRange }) => isRange).length
+      const startIndex = dataPerRow.findIndex(({ day }) => day === this.startDay) + 1
+      const overIndex = dataPerRow.findIndex(({ day }) => day === this.over) + 1
+      const fixRowGap = dataPerRow.length !== 7 && row === 1
+        ? this.daysBeforeMonth
+        : 0
 
-      // if row contains end date
-      const hasEndDate = dataPerRow.some(({ day, month }) => day === (this.over || this.endDay) && month === this.endMonth)
+      console.log('-----')
+      console.log('row', row)
+      console.log('ranges', ranges)
+      console.log('startIndex', startIndex)
+      console.log('overIndex', overIndex)
+      console.log(hasStartDate, hasEndDate)
 
-      // qnt of selectable days shorter than the start date
-      const diff = dataPerRow.filter(({ day }) => day < this.startDay).length
+      if (ranges === 7) return console.log('ranges 7') || 0
+      if ((this.month !== this.startMonth)) {
+        console.log('!=====')
+        return hasStartDate && hasEndDate
+          ? 0// (overIndex - 1) + fixRowGap
+          : 0 + fixRowGap
+      }
 
-      // fix diff of the line (1, 5 or 6) that does not have the 7 days of the current month (last month or previous month)
-      const diffFixs = this.daysBeforeMonth + diff
+      if (hasStartDate && hasEndDate && row === 1) {
+        if (overIndex === startIndex) return console.log('1.0') || (startIndex - 1) + this.daysBeforeMonth
 
-      if (dataPerRow.length === 7 && hasStartDate && hasEndDate && row === 1) return this.daysBeforeMonth > 0 ? diffFixs : diff
+        return overIndex > startIndex
+          ? console.log('1.1') || overIndex - ranges + this.daysBeforeMonth
+          : console.log('1.2') || (startIndex - ranges) + this.daysBeforeMonth
+      }
 
-      if (dataPerRow.length < 7 && !hasStartDate && hasEndDate) return row > 1 ? 0 : this.daysBeforeMonth
+      if (hasStartDate && hasEndDate) {
+        console.log('2.0')
+        if (overIndex >= startIndex) {
+          return startIndex - 1
+        } else {
+          return overIndex - 1
+        }
+      }
 
-      if (hasStartDate && hasEndDate || hasStartDate && !hasEndDate) return row === 1 ? diffFixs : diff
+      if (!hasStartDate && !hasEndDate) return console.log('2') || 0
 
-      return row === 1 ? this.daysBeforeMonth : 0
+      if (this.startDay > this.over)
+        return overIndex
+          ? console.log('3') || (overIndex - 1) + fixRowGap
+          : console.log('4') || (ranges - startIndex) === 0 ? 0 : (startIndex - 1) + fixRowGap
+
+      const index = startIndex > overIndex ? startIndex : overIndex
+
+      return !overIndex ? console.log('5') || 7 - ranges : console.log('6') || (index - ranges) * -1
     }
   }
 }
@@ -169,7 +229,7 @@ export default {
     margin-top: 5px;
     position: absolute;
 
-    & > .row {
+    & > .-selected {
       position: relative;
       padding: { top: 10px; bottom: 10px; }
       margin: { top: 2.5px; bottom: 2.5px; }
@@ -213,7 +273,7 @@ export default {
 
       &.-in-range {
         opacity: 1;
-        color: #FFFFFF;
+        color: blue !important;
       }
 
       &.-in-range:not(.-selectable) {
@@ -222,10 +282,10 @@ export default {
         background-color: unset;
       }
 
-      &.-pre-range {
-        color: #FFFFFF;
-        background: linear-gradient(135deg, #BC4CF7 0%, #7873EE 70%);
-      }
+      // &.-pre-selected {
+      //   color: #FFFFFF;
+      //   background: linear-gradient(135deg, #BC4CF7 0%, #7873EE 70%);
+      // }
 
       &.-hide { opacity: 0 !important; }
 
