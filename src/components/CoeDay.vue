@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { getDay, getMonth, getDatePerRow, getSelectedsPerRow, isBetween } from '../support/services'
+import { getDay, getMonth, getYear, getDate, getDatePerRow, getSelectedsPerRow, isBetween } from '../support/services'
 
 export default {
   name: 'CoeDay',
@@ -47,6 +47,7 @@ export default {
       type: [String, Object]
     },
     month: Number,
+    year: Number,
     calendar: {
       type: Array,
       required: true,
@@ -98,6 +99,23 @@ export default {
 
     endMonth () {
       return +getMonth(this.date.end)
+    },
+
+    startYear () {
+      return +getYear(this.date.start)
+    },
+
+    minDate () {
+      const startDate = getDate(this.date.start)
+      const overDate = getDate(this.date.over || this.date.end)
+
+      const date = Math.min(startDate, overDate)
+
+      return {
+        day: new Date(date).getDate(),
+        month: new Date(date).getMonth() + 1,
+        year: new Date(date).getFullYear()
+      }
     }
   },
 
@@ -131,7 +149,7 @@ export default {
 
       return {
         'width': this.getWidth(row, selectedPerRow) + '%',
-        'left': this.getLeft(row, dataPerRow) * daySizePixel + 'px'
+        'left': this.getLeft(row) * daySizePixel + 'px'
       }
     },
 
@@ -145,76 +163,46 @@ export default {
         : selectedPerRow * daySizePixel
     },
 
+    getLeft (row) {
+      const { day: startDay, month: startMonth, year: startYear } = this.minDate
+
+      // se for um mês ou ano diferente e se for a primeira semana do mês
+      if ((startMonth !== this.month || startYear !== this.year) && row === 1) {
+        return this.getIndex(1, this.month, this.year) % 7
+      }
+
+      const index = this.getIndex(startDay, startMonth, startYear)
+
+      // se não for a semana do dia inicial (startDay || over)
+      if (Math.floor(index / 7) + 1 !== row) return 0
+
+      // retorna a posição do dia na semana
+      return index % 7
+    },
+
+
+    getIndex (day, month, year) {
+      return this.calendar.findIndex(obj => obj.day === day && obj.month === month && obj.year === year)
+    },
+
     getDatePerRow (row) {
       return getDatePerRow(this.calendar, row, this.month)
     },
 
     // if row contains start date
     hasStartDate (row) {
-      return this.getDatePerRow(row).some(({ day, month }) => {
-        return day === this.startDay // && month === this.startMonth
-      })
+      const { day, month, year } = this.minDate
+      const index = this.getIndex(day, month, year)
+
+      return Math.floor(index / 7) + 1 === row
     },
 
     // if row contains end date
     hasEndDate (row) {
-      return this.getDatePerRow(row).some(({ day, month }) => {
+
+      return this.calendar.some(({ day, month, year }) => {
         return day === this.over // && month === this.endMonth
       })
-    },
-
-    getLeft (row, dataPerRow) {
-      const hasStartDate = this.hasStartDate(row)
-      const hasEndDate = this.hasEndDate(row)
-      const ranges = dataPerRow.filter(({ isRange }) => isRange).length
-      const startIndex = dataPerRow.findIndex(({ day }) => day === this.startDay) + 1
-      const overIndex = dataPerRow.findIndex(({ day }) => day === this.over) + 1
-      const fixRowGap = dataPerRow.length !== 7 && row === 1
-        ? this.daysBeforeMonth
-        : 0
-
-      console.log('-----')
-      console.log('row', row)
-      console.log('ranges', ranges)
-      console.log('startIndex', startIndex)
-      console.log('overIndex', overIndex)
-      console.log(hasStartDate, hasEndDate)
-
-      if (ranges === 7) return console.log('ranges 7') || 0
-      if ((this.month !== this.startMonth)) {
-        console.log('!=====')
-        return hasStartDate && hasEndDate
-          ? 0// (overIndex - 1) + fixRowGap
-          : 0 + fixRowGap
-      }
-
-      if (hasStartDate && hasEndDate && row === 1) {
-        if (overIndex === startIndex) return console.log('1.0') || (startIndex - 1) + this.daysBeforeMonth
-
-        return overIndex > startIndex
-          ? console.log('1.1') || overIndex - ranges + this.daysBeforeMonth
-          : console.log('1.2') || (startIndex - ranges) + this.daysBeforeMonth
-      }
-
-      if (hasStartDate && hasEndDate) {
-        console.log('2.0')
-        if (overIndex >= startIndex) {
-          return startIndex - 1
-        } else {
-          return overIndex - 1
-        }
-      }
-
-      if (!hasStartDate && !hasEndDate) return console.log('2') || 0
-
-      if (this.startDay > this.over)
-        return overIndex
-          ? console.log('3') || (overIndex - 1) + fixRowGap
-          : console.log('4') || (ranges - startIndex) === 0 ? 0 : (startIndex - 1) + fixRowGap
-
-      const index = startIndex > overIndex ? startIndex : overIndex
-
-      return !overIndex ? console.log('5') || 7 - ranges : console.log('6') || (index - ranges) * -1
     }
   }
 }
