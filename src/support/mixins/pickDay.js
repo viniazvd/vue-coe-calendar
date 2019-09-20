@@ -22,7 +22,6 @@ const pickDay = {
       // - reset dates
       // - set initial date
       if (this.internalDate && this.internalDate.start && this.internalDate.end) {
-        // console.log('1')
         this.day = day
         this.finalDay = null
 
@@ -36,7 +35,6 @@ const pickDay = {
         // - no date selected yet
         // - set the initial date
       } else if (!this.day) {
-        // console.log('2')
         this.day = day
 
         this.internalDate = {
@@ -49,7 +47,6 @@ const pickDay = {
       // - initial date already selected
       // - set the end date
       } else {
-        // console.log('3')
         this.finalDay = day
 
         this.internalDate = {
