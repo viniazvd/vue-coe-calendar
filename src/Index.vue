@@ -23,6 +23,7 @@
         :days-before-month="lastDayLastMonth - firstDayBeforeMonth + 1"
         :date="internalDate"
         :month="month"
+        :year="year"
         :calendar="calendar"
         v-bind="$attrs"
         @pick-day="pickDay"
