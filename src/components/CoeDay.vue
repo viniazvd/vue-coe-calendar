@@ -7,9 +7,8 @@
         :style="getStyles(row)"
         :class="{
           '-selected': over,
-          '-pre-selected': !over,
-          '-start-day': hasStartDate(row),
-          '-end-day': hasEndDate(row)
+          '-start-day': isRounded(row, 'min'),
+          '-end-day': isRounded(row, 'max')
         }"
       >
         &nbsp;
@@ -37,7 +36,7 @@
 </template>
 
 <script>
-import { getDay, getMonth, getYear, getDate, getDatePerRow, getSelectedsPerRow, isBetween } from '../support/services'
+import * as services from '../support/services'
 
 export default {
   name: 'CoeDay',
@@ -86,41 +85,28 @@ export default {
     },
 
     startDay () {
-      return +getDay(this.date.start)
+      return +services.getDay(this.date.start)
     },
 
     endDay () {
-      return this.date.end ? +getDay(this.date.end) : this.over
+      return this.date.end ? +services.getDay(this.date.end) : this.over
     },
 
     startMonth () {
-      return +getMonth(this.date.start)
+      return +services.getMonth(this.date.start)
     },
 
     endMonth () {
-      return +getMonth(this.date.end)
+      return +services.getMonth(this.date.end)
     },
 
     startYear () {
-      return +getYear(this.date.start)
-    },
-
-    minDate () {
-      const startDate = getDate(this.date.start)
-      const overDate = getDate(this.date.over || this.date.end)
-
-      const date = Math.min(startDate, overDate)
-
-      return {
-        day: new Date(date).getDate(),
-        month: new Date(date).getMonth() + 1,
-        year: new Date(date).getFullYear()
-      }
+      return +services.getYear(this.date.start)
     }
   },
 
   methods: {
-    isBetween,
+    // isBetween: services.isBetween,
 
     getStyles (row) {
       const sizes = this.style ? this.style[row] : { width: 0, left: 0 };
@@ -142,7 +128,7 @@ export default {
       const dataPerRow = this.getDatePerRow(row)
 
       // selected days per row
-      const selectedPerRow = getSelectedsPerRow(dataPerRow)
+      const selectedPerRow = services.getSelectedsPerRow(dataPerRow)
 
       // pixel size
       const daySizePixel = 46
@@ -164,45 +150,53 @@ export default {
     },
 
     getLeft (row) {
-      const { day: startDay, month: startMonth, year: startYear } = this.minDate
+      const {
+        day: startDay,
+        month: startMonth,
+        year: startYear
+      } = this.getDate('min')
 
-      // se for um mês ou ano diferente e se for a primeira semana do mês
       if ((startMonth !== this.month || startYear !== this.year) && row === 1) {
         return this.getIndex(1, this.month, this.year) % 7
       }
 
       const index = this.getIndex(startDay, startMonth, startYear)
 
-      // se não for a semana do dia inicial (startDay || over)
       if (Math.floor(index / 7) + 1 !== row) return 0
 
-      // retorna a posição do dia na semana
+      // week day
       return index % 7
     },
 
-
     getIndex (day, month, year) {
-      return this.calendar.findIndex(obj => obj.day === day && obj.month === month && obj.year === year)
+      return this.calendar.findIndex(obj => {
+        return obj.day === day && obj.month === month && obj.year === year
+      })
+    },
+
+    isRounded (row, type) {
+      const date = this.getDate(type)
+
+      return this.getDatePerRow(row).some(({ day, month, year }) => {
+        return day === date.day && month === date.month && year === date.year
+      })
+    },
+
+    getDate (type) {
+      const startDate = services.getDate(this.date.start)
+      const overDate = services.getDate(this.date.over || this.date.end)
+
+      const date = Math[type](startDate, overDate)
+
+      return {
+        day: new Date(date).getDate(),
+        month: new Date(date).getMonth() + 1,
+        year: new Date(date).getFullYear()
+      }
     },
 
     getDatePerRow (row) {
-      return getDatePerRow(this.calendar, row, this.month)
-    },
-
-    // if row contains start date
-    hasStartDate (row) {
-      const { day, month, year } = this.minDate
-      const index = this.getIndex(day, month, year)
-
-      return Math.floor(index / 7) + 1 === row
-    },
-
-    // if row contains end date
-    hasEndDate (row) {
-
-      return this.calendar.some(({ day, month, year }) => {
-        return day === this.over // && month === this.endMonth
-      })
+      return services.getDatePerRow(this.calendar, row, this.month)
     }
   }
 }
@@ -261,7 +255,7 @@ export default {
 
       &.-in-range {
         opacity: 1;
-        color: blue !important;
+        color: white !important;
       }
 
       &.-in-range:not(.-selectable) {
@@ -269,11 +263,6 @@ export default {
         padding: unset;
         background-color: unset;
       }
-
-      // &.-pre-selected {
-      //   color: #FFFFFF;
-      //   background: linear-gradient(135deg, #BC4CF7 0%, #7873EE 70%);
-      // }
 
       &.-hide { opacity: 0 !important; }
 
