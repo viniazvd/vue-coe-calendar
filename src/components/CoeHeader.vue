@@ -65,6 +65,9 @@ export default {
 
   & > .date-preview {
     cursor: pointer;
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: 700;
 
     & :first-child { padding-right: 10px; }
   }

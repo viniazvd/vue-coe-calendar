@@ -1,5 +1,7 @@
 <template>
   <div id="app" class="vue-coe-calendar">
+    <link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
+
     <div
       v-if="!showMonths && !showYears"
       class="container-calendar"
@@ -199,36 +201,50 @@ export default {
 
 <style lang="scss">
 .vue-coe-calendar {
-  width: 330px;
-  height: 400px;
+  font-family: Nunito, Arial;
+  width: 310px;
   margin-top: 10px;
   position: relative;
-  border: 1px solid gray;
+  border-radius: 5px;
+  box-shadow: 0 2px 6px 0 rgba(0,0,0,0.2);
+  overflow: hidden;
 
   & > .container-calendar {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
     outline: none;
 
     & > .apply {
-      bottom: 0;
-      position: absolute;
-
       width: 100%;
       display: flex;
       justify-content: center;
 
       height: 40px;
-      border-radius: 3px;
       background: linear-gradient(135deg, #BC4CF7 0%, #7873EE 100%);
 
       & > .text {
         color: #FFFFFF;
-        font-family: Ubuntu;
+        font-family: Nunito, Arial;
         font-size: 11px;
         font-weight: 500;
         line-height: 14px;
         text-align: center;
-        text-shadow: 0 1px 2px 0 rgba(0,0,0,0.2);
+        text-shadow: 0 1px 2px 0 rgba(black, .2);
       }
+    }
+
+    & > .coe-day,
+    & > .header-container,
+    & > .week-container,
+    & > .reset-container{
+      width: 270px;
+    }
+
+    & > .week-container {
+      padding-top: 10px;
+      padding-bottom: 20px;
+      border-top: 1px solid rgba(#121E48, .1);
     }
   }
 }

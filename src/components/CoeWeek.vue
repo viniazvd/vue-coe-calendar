@@ -1,7 +1,7 @@
 <template functional>
   <div class="week-container">
     <div
-      v-for="(day, index) in ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']"
+      v-for="(day, index) in ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab']"
       :key="index"
       class="week"
     >
@@ -12,16 +12,18 @@
 
 <style lang="scss">
 .week-container {
-  display: flex;
+  display: grid;
+  grid-column-gap: 10px;
+  grid-template-columns: repeat(7, 30px);
 
   & > .week {
     width: 100%;
     text-align: center;
-    padding: 5px;
 
     & > .value {
-      padding-bottom: 5px;
-      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: rgba(18, 30, 72, 0.3);
     }
   }
 }
