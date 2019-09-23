@@ -78,7 +78,10 @@ export default {
       return Array
         .from({ length: 6 })
         .reduce((acc, item, index) => {
-          acc[index + 1] = this.getPosition(index + 1)
+          const { width, left } = this.getPosition(index + 1)
+          const background = this.gradient(index + 1)
+
+          acc[index + 1] = { width, left, background }
 
           return acc
         }, {})
@@ -106,6 +109,33 @@ export default {
   },
 
   methods: {
+    gradient (row) {
+      const { day: startDay } = this.getDate('min')
+      const { day: endDay } = this.getDate('max')
+
+      // descobre o primeiro e o último dia da semana do mesmo mês
+      const sun = row === 1 ? 1 : this.calendar[(row - 1)*7].day
+      const sat = row > 3 && this.calendar[row*7 - 1].day < 13 ? 30 : this.calendar[row*7 - 1].day
+
+      // se nao possuir dias selecionados, retorna cor sólida
+      // if (sun > endDay || sat < startDay) return 'red'
+
+      // descobre as porcentagens
+      const weekStartDay = this.isRounded(row, 'min') ? startDay : sun
+      const weekEndDay = this.isRounded(row, 'max') ? endDay : sat
+      const total = endDay - startDay + 1
+      const startPerc = 100*(startDay - weekStartDay)/total
+      const endPerc = 100*(weekEndDay - startDay + 1)/total
+
+      // calcula a porcentagem inicial
+      const aaa = startPerc ? startPerc/(endPerc + startPerc) : 0
+
+      // calcula a porcentagem final
+      const bbb = endPerc === 100 ? 1 : (100 + startPerc)/(endPerc + startPerc)
+
+      return `linear-gradient(90deg, #BC4CF7 ${aaa*100}%, #7873EE ${bbb*100}%)`
+    },
+
     // isBetween: services.isBetween,
 
     getStyles (row) {
@@ -131,10 +161,11 @@ export default {
       const selectedPerRow = services.getSelectedsPerRow(dataPerRow)
 
       // pixel size
-      const daySizePixel = 46
+      const daySizePixel = 47.14
 
       return {
-        'width': this.getWidth(row, selectedPerRow) + '%',
+        // 'width': this.getWidth(row, selectedPerRow) + '%',
+        'width': this.getWidth(row, selectedPerRow) + 'px',
         'left': this.getLeft(row) * daySizePixel + 'px'
       }
     },
@@ -146,7 +177,8 @@ export default {
 
       return startDayEqualEnd && startMonthEqualEnd
         ? 0
-        : selectedPerRow * daySizePixel
+        // : selectedPerRow * daySizePixel
+        : selectedPerRow * 47.14
     },
 
     getLeft (row) {
