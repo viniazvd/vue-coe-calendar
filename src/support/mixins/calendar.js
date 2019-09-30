@@ -1,4 +1,4 @@
-import { getMonth, getYear, getDate } from '../services/index'
+import { getMonth, getYear, getDate, minAndMax } from '../services/index'
 
 const getCalendar = {
   methods: {
@@ -10,15 +10,14 @@ const getCalendar = {
       return this.firstDayBeforeMonth + i <= this.lastDayLastMonth
     },
 
-    getRange (day, month) {
+    getRange (day, month, year) {
       if (!this.internalDate || !this.internalDate.start) return false
       if (!this.isRange) return day === this.day && (month + 1) === this.initMonth
 
-      const startDate = getDate(this.internalDate.start)
-      const finalDate = getDate(this.internalDate.over || this.internalDate.end)
-      const loopDate = +new Date(this.year, (this.month - 1), day)
+      const { min: startDate, max: finalDate } = minAndMax(getDate(this.internalDate.start), getDate(this.internalDate.over || this.internalDate.end || this.internalDate.start))
+      const date = +new Date(year, month, day)
 
-      return (loopDate >= startDate && loopDate <= finalDate) || (loopDate <= startDate && loopDate >= finalDate)
+      return date >= startDate && date <= finalDate
     },
 
     isClicked (day, month, year) {
@@ -63,7 +62,7 @@ const getCalendar = {
               month: month + 1,
               year,
               selectable: true,
-              isRange: this.getRange(day, month),
+              isRange: this.getRange(day, month, year),
               clicked: this.isClicked(day, month, year)
             }
           }

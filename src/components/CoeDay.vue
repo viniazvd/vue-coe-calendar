@@ -6,7 +6,7 @@
         :key="row"
         :style="getStyles(row)"
         :class="{
-          '-selected': over,
+          '-selected': over || date.start,
           '-start-day': isRounded(row, 'min'),
           '-end-day': isRounded(row, 'max')
         }"
@@ -65,7 +65,7 @@ export default {
   computed: {
     // style settings for each line
     style () {
-      if (!this.date.end && !this.date.over) {
+      if (!this.date.end && !this.date.over && !this.date.start) {
         return Array
           .from({ length: 6 })
           .reduce((acc, item, index) => {
@@ -216,7 +216,7 @@ export default {
 
     getDate (type) {
       const startDate = services.getDate(this.date.start)
-      const overDate = services.getDate(this.date.over || this.date.end)
+      const overDate = services.getDate(this.date.over || this.date.end || this.date.start)
 
       const date = Math[type](startDate, overDate)
 
@@ -247,7 +247,6 @@ export default {
       position: relative;
       padding: { top: 10px; bottom: 10px; }
       margin: { top: 2.5px; bottom: 2.5px; }
-      background: linear-gradient(135deg, #BC4CF7 0%, #7873EE 100%);
 
       &.-start-day {
         border-top-left-radius: 20px;

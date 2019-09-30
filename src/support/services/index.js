@@ -55,3 +55,9 @@ export function getSelectedsPerRow (dataPerRow) {
    return acc
   }, 0)
 }
+
+export function minAndMax (dateA, dateB) {
+  if (dateA < dateB) return { min: dateA, max: dateB }
+
+  return { min: dateB, max: dateA }
+}
