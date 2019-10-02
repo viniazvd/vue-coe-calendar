@@ -52,7 +52,6 @@ export default {
       required: true,
       validator: c => c.length === 42
     },
-    daysBeforeMonth: Number,
     showDisabledDays: Boolean
   },
 
@@ -98,16 +97,10 @@ export default {
 
     endMonth () {
       return +services.getMonth(this.date.end)
-    },
-
-    startYear () {
-      return +services.getYear(this.date.start)
     }
   },
 
   methods: {
-    // isBetween: services.isBetween,
-
     getStyles (row) {
       const sizes = this.style ? this.style[row] : { width: 0, left: 0 };
       const opacity = this.date.over ? { opacity: 0.5 } : {}

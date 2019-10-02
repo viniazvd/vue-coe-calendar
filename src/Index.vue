@@ -20,7 +20,6 @@
       <coe-week />
 
       <coe-day
-        :days-before-month="lastDayLastMonth - firstDayBeforeMonth + 1"
         :date="internalDate"
         :month="month"
         :year="year"
@@ -82,9 +81,9 @@ export default {
     return {
       internalDate: '',
       day: null,
-      finalDay: null,
       month: null,
       year: null,
+      finalDay: null,
       showMonths: false,
       showYears: false
     }
@@ -108,6 +107,9 @@ export default {
         over: null
       }
     }
+    else {
+      this.internalDate = (inputDate || currentDate)
+    }
   },
 
   watch: {
@@ -123,7 +125,7 @@ export default {
 
     internalDate: {
       handler ({ start, end }) {
-        if (start && end && (getDate(start) > getDate(end)) && this.initMonth === this.month) {
+        if (start && end && (getDate(start) > getDate(end))) {
           this.internalDate = {
             start: end,
             end: start,
@@ -131,14 +133,6 @@ export default {
           }
         }
       }
-    }
-  },
-
-  computed: {
-    initMonth () {
-      if (!this.day || !this.internalDate) return null
-
-      return +getMonth(this.isRange ? this.internalDate.start : this.internalDate)
     }
   },
 
@@ -171,9 +165,8 @@ export default {
     },
 
     setOverDay (over) {
-      // if (!this.internalDate || !this.internalDate.hasOwnProperty('end')) return false
-
-      this.internalDate.over = getFormattedDate(over, this.month, this.year)
+      if (this.isRange)
+        this.internalDate.over = getFormattedDate(over, this.month, this.year)
     },
 
     apply () {
