@@ -32,6 +32,8 @@ export function getFormattedDate (day, month, year) {
 }
 
 export function getDate (date) {
+  if (typeof date === 'object') return +new Date(date.year, date.month - 1, date.day)
+
   return +new Date(getYear(date), (getMonth(date) - 1), getDay(date))
 }
 
@@ -54,4 +56,13 @@ export function getSelectedsPerRow (dataPerRow) {
 
    return acc
   }, 0)
+}
+
+export function getTimePeriod (dates) {
+  const dateX = dates.start
+  const dateY = (dates.over || dates.end || dates.start)
+
+  if (getDate(dateX) < getDate(dateY)) return { start: dateX, end: dateY }
+
+  return { start: dateY, end: dateX }
 }
