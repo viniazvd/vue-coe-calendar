@@ -72,6 +72,7 @@ export default {
 <style lang="scss">
 .options-selection {
   max-height: 400px;
+  overflow-y: auto;
 
   & > .months {
     display: flex;
