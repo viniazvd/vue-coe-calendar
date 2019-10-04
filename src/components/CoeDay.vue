@@ -5,11 +5,10 @@
         v-for="row in 6"
         :key="row"
         :style="getStyles(row)"
-        :class="{
-          '-selected': over || date.start,
+        :class="['row', {
           '-start-day': isRounded(row, 'min'),
           '-end-day': isRounded(row, 'max')
-        }"
+        }]"
       >
         &nbsp;
       </div>
@@ -23,6 +22,7 @@
           'day', {
             '-selectable': day.selectable,
             '-in-range': (day.isRange || day.clicked) && day.selectable,
+            '-single': !date.start,
             '-hide': showDisabledDays && !day.selectable,
           }
         ]"
@@ -134,12 +134,8 @@ export default {
 
     getWidth (row, selectedPerRow) {
       const daySizePixel = 14
-      const startDayEqualEnd = this.startDay === this.endDay
-      const startMonthEqualEnd = this.startMonth === this.endMonth
 
-      return startDayEqualEnd && startMonthEqualEnd
-        ? 0
-        : selectedPerRow * daySizePixel
+      return selectedPerRow * daySizePixel
     },
 
     getLeft (row) {
@@ -204,7 +200,7 @@ export default {
     margin-top: 5px;
     position: absolute;
 
-    & > .-selected {
+    & > .row {
       position: relative;
       padding: { top: 10px; bottom: 10px; }
       margin: { top: 2.5px; bottom: 2.5px; }
@@ -249,6 +245,8 @@ export default {
       &.-in-range {
         opacity: 1;
         color: white !important;
+
+        &.-single { background: linear-gradient(135deg, #BC4CF7 0%, #7873EE 100%); }
       }
 
       &.-in-range:not(.-selectable) {

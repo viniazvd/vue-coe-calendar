@@ -54,7 +54,7 @@ export function getSelectedsPerRow (dataPerRow) {
   return dataPerRow.reduce((acc, { isRange, selectable }) => {
     if (isRange && selectable) acc += isRange
 
-   return acc
+    return acc
   }, 0)
 }
 
