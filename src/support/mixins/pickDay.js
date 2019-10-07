@@ -1,15 +1,12 @@
-import { getFormattedDate } from '../services'
-
 const pickDay = {
   methods: {
-    pickDay ({ selectable, day, over }) {
+    pickDay ({ selectable, day, month, year }) {
       if (!selectable) return false
 
-      const date = (day = this.day) => getFormattedDate(day, this.month, this.year)
+      const date = (day = this.date.start.day) => ({ day, month: this.month, year: this.year })
 
       if (!this.isRange) {
-        this.day = day
-        this.internalDate = date()
+        this.date = { day, month, year }
 
         return
       }
@@ -21,40 +18,25 @@ const pickDay = {
       // - end date already selected
       // - reset dates
       // - set initial date
-      if (this.internalDate && this.internalDate.start && this.internalDate.end) {
-        this.day = day
-        this.finalDay = null
-
-        this.internalDate = {
-          start: date(),
-          end: null,
-          over: null
-        }
+      if (this.date && this.date.start && this.date.end) {
+        this.date.start = date(day)
+        this.date.end = null
+        this.date.over = null
 
         // case 2:
         // - no date selected yet
         // - set the initial date
-      } else if (!this.day) {
-        this.day = day
-
-        this.internalDate = {
-          start: date(),
-          end: null,
-          over: null
-        }
+      } else if (!this.date.start.day) {
+        this.date.start = date()
+        this.date.end = null
+        this.date.over = null
 
       // case 3:
       // - initial date already selected
       // - set the end date
       } else {
-        this.finalDay = day
-
-        this.internalDate = {
-          start: this.internalDate.start,
-          end: day && date(day),
-          over: null
-          // over: date(over || day) // ?
-        }
+        this.date.end = date(day)
+        this.date.over = null
       }
     }
   }

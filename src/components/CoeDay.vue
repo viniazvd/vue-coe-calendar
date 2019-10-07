@@ -6,8 +6,8 @@
         :key="row"
         :style="getStyles(row)"
         :class="['row', {
-          '-start-day': isRounded(row, 'min'),
-          '-end-day': isRounded(row, 'max')
+          '-start-day': isRounded(row, 'start'),
+          '-end-day': isRounded(row, 'end')
         }]"
       >
         &nbsp;
@@ -26,7 +26,7 @@
             '-hide': showDisabledDays && !day.selectable,
           }
         ]"
-        @click="$emit('pick-day', Object.assign(day, over))"
+        @click="$emit('pick-day', Object.assign(day))"
         @mouseover="e => day.selectable && setEndDate(e)"
       >
         <span class="value">{{ day.day }}</span>
@@ -42,9 +42,7 @@ export default {
   name: 'CoeDay',
 
   props: {
-    date: {
-      type: [String, Object]
-    },
+    date: Object,
     month: Number,
     year: Number,
     calendar: {
@@ -53,12 +51,6 @@ export default {
       validator: c => c.length === 42
     },
     showDisabledDays: Boolean
-  },
-
-  data () {
-    return {
-      over: null
-    }
   },
 
   computed: {
@@ -81,22 +73,6 @@ export default {
 
           return acc
         }, {})
-    },
-
-    startDay () {
-      return +services.getDay(this.date.start)
-    },
-
-    endDay () {
-      return this.date.end ? +services.getDay(this.date.end) : this.over
-    },
-
-    startMonth () {
-      return +services.getMonth(this.date.start)
-    },
-
-    endMonth () {
-      return +services.getMonth(this.date.end)
     }
   },
 
@@ -111,9 +87,7 @@ export default {
     setEndDate (e) {
       if (this.date.end || !e.target.children.length) return false
 
-      this.over = +(e.target.children[0].innerHTML)
-
-      this.$emit('set:over-day', this.over)
+      this.$emit('set:over-day', +(e.target.children[0].innerHTML))
     },
 
     getPosition (row) {
@@ -139,17 +113,13 @@ export default {
     },
 
     getLeft (row) {
-      const {
-        day: startDay,
-        month: startMonth,
-        year: startYear
-      } = this.getDate('min')
+      const { start } = services.getTimePeriod(this.date)
 
-      if ((startMonth !== this.month || startYear !== this.year) && row === 1) {
+      if ((start.month !== this.month || start.year !== this.year) && row === 1) {
         return this.getIndex(1, this.month, this.year) % 7
       }
 
-      const index = this.getIndex(startDay, startMonth, startYear)
+      const index = this.getIndex(start.day, start.month, start.year)
 
       if (Math.floor(index / 7) + 1 !== row) return 0
 
@@ -164,24 +134,14 @@ export default {
     },
 
     isRounded (row, type) {
-      const date = this.getDate(type)
+      const dates = services.getTimePeriod(this.date)
+      const date = dates[type]
+
+      if (!date) return false
 
       return this.getDatePerRow(row).some(({ day, month, year }) => {
         return day === date.day && month === date.month && year === date.year
       })
-    },
-
-    getDate (type) {
-      const startDate = services.getDate(this.date.start)
-      const overDate = services.getDate(this.date.over || this.date.end || this.date.start)
-
-      const date = Math[type](startDate, overDate)
-
-      return {
-        day: new Date(date).getDate(),
-        month: new Date(date).getMonth() + 1,
-        year: new Date(date).getFullYear()
-      }
     },
 
     getDatePerRow (row) {

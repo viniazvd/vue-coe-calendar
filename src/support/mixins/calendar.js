@@ -1,4 +1,4 @@
-import { getMonth, getYear, getDate, isBetween, getTimePeriod } from '../services/index'
+import { getDate, isBetween, getTimePeriod } from '../services/index'
 
 const getCalendar = {
   methods: {
@@ -11,21 +11,20 @@ const getCalendar = {
     },
 
     getRange (day, month, year) {
-      if (!this.internalDate || !this.internalDate.start) return false
-      if (!this.isRange) return day === this.day && (month + 1) === this.initMonth
+      if (!this.date || !(this.date.start || this.date.day)) return false
+      if (!this.isRange) return day === this.date.day && month === this.date.month && year === this.date.year
 
-      const { start, end } = getTimePeriod(this.internalDate)
-      const date = +new Date(year, month, day)
+      const { start, end } = getTimePeriod(this.date)
 
-      return isBetween(getDate(start), getDate(end), date)
+      return isBetween(getDate(start), getDate(end), getDate({ day, month, year }))
     },
 
     isClicked (day, month, year) {
-      if (!this.internalDate) return false
+      if (!this.date || (this.isRange && !this.date.start)) return false
 
-      const date = this.isRange ? this.internalDate.start : this.internalDate
+      const date = this.isRange ? this.date.start : this.date
 
-      return (day === this.day) && (+getMonth(date) === month + 1) && (+getYear(date) === year)
+      return (day === date.day) && (date.month === month + 1) && (date.year === year)
     },
 
     getCalendar (year, month) {
@@ -35,10 +34,10 @@ const getCalendar = {
 
           return {
             day,
-            month,
+            month: month - 1,
             year,
             selectable: false,
-            isRange: this.getRange(day, month, year),
+            isRange: this.getRange(day, month - 1, year),
             clicked: false
           }
         } else {
@@ -47,10 +46,10 @@ const getCalendar = {
 
             return {
               day,
-              month: month + 2,
+              month: month + 1,
               year,
               selectable: false,
-              isRange: this.getRange(day, month, year),
+              isRange: this.getRange(day, month + 1, year),
               clicked: false
             }
           } else {
@@ -59,7 +58,7 @@ const getCalendar = {
 
             return {
               day,
-              month: month + 1,
+              month,
               year,
               selectable: true,
               isRange: this.getRange(day, month, year),
@@ -73,7 +72,7 @@ const getCalendar = {
 
   computed: {
     calendar () {
-      return this.getCalendar(this.year, this.month - 1)
+      return this.getCalendar(this.year, this.month)
     },
 
     firstDayBeforeMonth () {
@@ -109,4 +108,3 @@ const getCalendar = {
 }
 
 export default getCalendar
-

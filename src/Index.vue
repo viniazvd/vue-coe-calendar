@@ -20,7 +20,7 @@
       <coe-week />
 
       <coe-day
-        :date="internalDate"
+        :date="date"
         :month="month"
         :year="year"
         :calendar="calendar"
@@ -59,7 +59,7 @@ import CoeDay from './components/CoeDay.vue'
 import CoeSelections from './components/CoeSelections.vue'
 
 // services
-import { getDay, getMonth, getYear, getDate, getFormattedDate } from './support/services'
+import { getDay, getMonth, getYear, getDate } from './support/services'
 import isValid from './support/services/isValid'
 
 export default {
@@ -71,19 +71,17 @@ export default {
 
   props: {
     isRange: Boolean,
-    date: {
+    inputDate: {
       type: [String, Object],
-      required: true
+      default: ''
     }
   },
 
   data () {
     return {
-      internalDate: '',
-      day: null,
+      date: {},
       month: null,
       year: null,
-      finalDay: null,
       showMonths: false,
       showYears: false
     }
@@ -94,39 +92,47 @@ export default {
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' }
 
     const currentDate = date.toLocaleDateString('pt-BR', options)
-    const inputDate = isValid(this.date) && this.date
+    const inputDate = isValid(this.inputDate) && this.inputDate
 
-    this.day = +getDay(inputDate || currentDate)
-    this.month = +getMonth(inputDate || currentDate)
-    this.year = +getYear(inputDate || currentDate)
+    const day = +getDay(inputDate || currentDate)
+    const month = +getMonth(inputDate || currentDate)
+    const year = +getYear(inputDate || currentDate)
+
+    this.month = month
+    this.year = year
 
     if (this.isRange) {
-      this.internalDate = {
-        start: inputDate || currentDate,
+      this.date = {
+        start: { day, month, year },
         end: null,
         over: null
       }
     }
     else {
-      this.internalDate = (inputDate || currentDate)
+      this.date = { day, month, year }
     }
   },
 
   watch: {
-    date (d) {
+    inputDate (d) {
       if (!isValid(d)) return
 
-      this.day = +getDay(d)
-      this.month = +getMonth(d)
-      this.year = +getYear(d)
+      const date = {
+        day: +getDay(d),
+        month: +getMonth(d),
+        year: +getYear(d)
+      }
 
-      this.internalDate = this.isRange ? { start: d } : d
+      this.month = date.month
+      this.year = date.year
+
+      this.date = this.isRange ? { start: date } : date
     },
 
-    internalDate: {
+    date: {
       handler ({ start, end }) {
         if (start && end && (getDate(start) > getDate(end))) {
-          this.internalDate = {
+          this.date = {
             start: end,
             end: start,
             over: null //end
@@ -164,25 +170,22 @@ export default {
       this.$on('hook:beforeDestroy', () => window.removeEventListener('keyup', this.dateHandler))
     },
 
-    setOverDay (over) {
+    setOverDay (day) {
       if (this.isRange)
-        this.internalDate.over = getFormattedDate(over, this.month, this.year)
+        this.date.over = { day, month: this.month, year: this.year }
     },
 
     apply () {
-      const hasDate__STRING = typeof this.internalDate === 'string' && this.internalDate.length
-      const hasDate__OBJECT = typeof this.internalDate === 'object' && Object.values(this.internalDate).filter(Boolean).length
+      const hasDate = Object.values(this.date).filter(Boolean).length
 
-      if (hasDate__STRING || hasDate__OBJECT) {
-        this.$emit('date-handler', this.internalDate)
+      if (hasDate) {
+        this.$emit('date-handler', this.date)
         this.$emit('apply')
       }
     },
 
     resetDate () {
-      this.day = null
-      this.finalDay = null
-      this.internalDate = (this.isRange && {}) || ''
+      this.date = {}
 
       this.$emit('date-handler', '')
     }
