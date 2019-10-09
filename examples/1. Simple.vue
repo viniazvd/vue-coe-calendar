@@ -10,11 +10,10 @@
     <calendar
       v-if="showPicker"
       v-outside="() => showPicker = false"
-      :date="date"
-      @date-handler="v => date = v"
+      :input="date"
+      @date-handler="v => date = v.formatted"
       @apply="() => showPicker = false"
     />
-
   </div>
 </template>
 
