@@ -25,7 +25,8 @@ export function getYear (date) {
   return date && date.split('/')[2]
 }
 
-export function getFormattedDate (day, month, year) {
+export function getFormattedDate ({ day, month, year }) {
+  if (day < 10) day = `0${day}`
   if (month < 10) month = `0${month}`
 
   return `${day}/${month}/${year}`

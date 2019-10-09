@@ -59,7 +59,7 @@ import CoeDay from './components/CoeDay.vue'
 import CoeSelections from './components/CoeSelections.vue'
 
 // services
-import { getDay, getMonth, getYear, getDate } from './support/services'
+import { getDay, getMonth, getYear, getDate, getFormattedDate } from './support/services'
 import isValid from './support/services/isValid'
 
 export default {
@@ -71,7 +71,7 @@ export default {
 
   props: {
     isRange: Boolean,
-    inputDate: {
+    input: {
       type: [String, Object],
       default: ''
     }
@@ -92,7 +92,7 @@ export default {
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' }
 
     const currentDate = date.toLocaleDateString('pt-BR', options)
-    const inputDate = isValid(this.inputDate) && this.inputDate
+    const inputDate = isValid(this.input) && this.input
 
     const day = +getDay(inputDate || currentDate)
     const month = +getMonth(inputDate || currentDate)
@@ -114,19 +114,23 @@ export default {
   },
 
   watch: {
-    inputDate (d) {
-      if (!isValid(d)) return
+    input: {
+      handler (d) {
+        if (!isValid(d)) return
 
-      const date = {
-        day: +getDay(d),
-        month: +getMonth(d),
-        year: +getYear(d)
-      }
+        const date = {
+          day: +getDay(d),
+          month: +getMonth(d),
+          year: +getYear(d)
+        }
 
-      this.month = date.month
-      this.year = date.year
+        this.month = date.month
+        this.year = date.year
 
-      this.date = this.isRange ? { start: date } : date
+        if (this.isRange) this.date.start = date
+        else this.date = date
+      },
+      deep: true
     },
 
     date: {
@@ -138,7 +142,8 @@ export default {
             over: null //end
           }
         }
-      }
+      },
+      deep: true
     }
   },
 
@@ -146,6 +151,7 @@ export default {
     dateHandler ({ key } = {}, handler) {
       // to prevent unnecessarily entering in datehandler
       if (key && !handler && !['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(key)) return
+      if (document.activeElement !== this.$el && document.activeElement.parentNode !== this.$el) return
 
       if (handler === '<' || key === 'ArrowLeft') this.month--
       if ((handler === '<' || key === 'ArrowLeft') && !this.month) {
@@ -179,7 +185,19 @@ export default {
       const hasDate = Object.values(this.date).filter(Boolean).length
 
       if (hasDate) {
-        this.$emit('date-handler', this.date)
+        if (this.isRange) {
+          const date = {
+            start: { ...this.date.start, formatted: getFormattedDate(this.date.start) },
+            end: { ...this.date.end, formatted: getFormattedDate(this.date.end) }
+          }
+
+          this.$emit('date-handler', date)
+        }
+
+        else {
+          this.$emit('date-handler', { ...this.date, formatted: getFormattedDate(this.date) })
+        }
+
         this.$emit('apply')
       }
     },
