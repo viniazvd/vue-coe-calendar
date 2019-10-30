@@ -157,13 +157,13 @@ export default {
 
   & > .row-container {
     width: 100%;
-    margin-top: 5px;
+    height: 100%;
     position: absolute;
 
     & > .row {
+      margin-bottom: 5px;
+      height: 30px;
       position: relative;
-      padding: { top: 10px; bottom: 10px; }
-      margin: { top: 2.5px; bottom: 2.5px; }
       background: linear-gradient(135deg, #BC4CF7 0%, #7873EE 100%);
 
       &.-start-day {
@@ -179,16 +179,18 @@ export default {
   }
 
   & > .day-container {
-    display: flex;
-    margin-top: 7px;
-    text-align: center;
-    flex-flow: row wrap;
+    display: grid;
+    grid-column-gap: 10px;
+    grid-row-gap: 5px;
+    grid-template-columns: repeat(7, 30px);
 
     & > .day {
       border-radius: 20px;
       flex: 0 calc(100% / 7);
-      padding: { top: 10px; bottom: 10px; }
-      margin: { top: 2.5px; bottom: 2.5px; }
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 30px;
 
       &.-selectable {
         z-index: 1;
@@ -217,7 +219,10 @@ export default {
 
       &.-hide { opacity: 0 !important; }
 
-      & > .value { font-size: 14px; }
+      & > .value {
+        font-size: 14px;
+        line-height: 15px;
+      }
     }
 
     & > .day:not(.-selectable) { opacity: 0.2; }
