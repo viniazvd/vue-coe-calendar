@@ -97,34 +97,46 @@ export default {
       // selected days per row
       const selectedPerRow = services.getSelectedsPerRow(dataPerRow)
 
-      // pixel size
-      const daySizePixel = 46
-
       return {
-        'width': this.getWidth(row, selectedPerRow) + '%',
-        'left': this.getLeft(row) * daySizePixel + 'px'
+        'width': this.getWidth(row, selectedPerRow) + 'px',
+        'left': this.getLeft(row) + 'px'
       }
     },
 
     getWidth (row, selectedPerRow) {
-      const daySizePixel = 14
+      if (!selectedPerRow) return 0
 
-      return selectedPerRow * daySizePixel
+      const daySizePixel = 30
+      const dayMargin = 10
+      const calendarMargin = 20
+      const { start, end } = services.getTimePeriod(this.date)
+      const startIndex = this.getIndex(start.day, start.month, start.year)
+      const endIndex = this.getIndex(end.day, end.month, end.year)
+      const startRow = Math.floor(startIndex / 7) + 1
+      const endRow = Math.floor(endIndex / 7) + 1
+      const extraSpace = startRow !== row && endRow !== row
+      ? calendarMargin*2
+      : startRow === endRow ? 0 : calendarMargin
+
+      return selectedPerRow * daySizePixel + (selectedPerRow - 1) * dayMargin + extraSpace
     },
 
     getLeft (row) {
+      // pixel size
+      const daySizePixel = 40
+
       const { start } = services.getTimePeriod(this.date)
 
       if ((start.month !== this.month || start.year !== this.year) && row === 1) {
-        return this.getIndex(1, this.month, this.year) % 7
+        return (this.getIndex(1, this.month, this.year) % 7) * daySizePixel - 20
       }
 
       const index = this.getIndex(start.day, start.month, start.year)
 
-      if (Math.floor(index / 7) + 1 !== row) return 0
+      if (Math.floor(index / 7) + 1 !== row) return -20
 
       // week day
-      return index % 7
+      return (index % 7) * daySizePixel
     },
 
     getIndex (day, month, year) {
