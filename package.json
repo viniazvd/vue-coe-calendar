@@ -22,7 +22,7 @@
     "babel-jest": "^23.6.0",
     "bili": "^3.4.2",
     "jest": "^23.6.0",
-    "node-sass": "^4.11.0",
+    "node-sass": "^4.13.1",
     "poi": "^12.1.6",
     "rollup-plugin-vue": "^4.3.2",
     "sass-loader": "^7.1.0",
