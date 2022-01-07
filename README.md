@@ -7,7 +7,7 @@
 <br>
 
 <p align="center">
-  ✨ <a href="#">Example</a>✨
+  ✨ <a href="https://viniazvd.github.io/vue-coe-calendar/">Example</a>✨
 </p>
 
 <br>
