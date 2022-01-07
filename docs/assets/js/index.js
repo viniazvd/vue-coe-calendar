@@ -489,6 +489,7 @@ var render = function () {
         domProps: { value: _vm.date },
         on: {
           click: function ($event) {
+            $event.stopPropagation()
             _vm.showPicker = true
           },
           input: function ($event) {
@@ -567,6 +568,7 @@ var render = function () {
         domProps: { value: _vm.date },
         on: {
           click: function ($event) {
+            $event.stopPropagation()
             _vm.showPicker = true
           },
           input: function ($event) {
@@ -584,10 +586,8 @@ var render = function () {
               {
                 name: "outside",
                 rawName: "v-outside",
-                value: function () {
-                  return (_vm.showPicker = false)
-                },
-                expression: "() => showPicker = false",
+                value: _vm.closeCalendar,
+                expression: "closeCalendar",
               },
             ],
             attrs: { "is-range": "", date: _vm.date },
@@ -645,6 +645,7 @@ var render = function () {
         domProps: { value: _vm.date },
         on: {
           click: function ($event) {
+            $event.stopPropagation()
             _vm.showPicker = true
           },
           input: function ($event) {
@@ -1415,8 +1416,15 @@ __webpack_require__.r(__webpack_exports__);
       date: '20/04/2018',
       showPicker: false
     };
-  }
+  },
 
+  methods: {
+    closeCalendar() {
+      console.log('coe');
+      this.showPicker = false;
+    }
+
+  }
 });
 
 /***/ }),
