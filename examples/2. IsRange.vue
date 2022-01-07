@@ -4,12 +4,12 @@
       class="DatePicker__input"
       type="text"
       v-model="date"
-      @click="showPicker = true"
+      @click.stop="showPicker = true"
     >
 
     <calendar
       v-if="showPicker"
-      v-outside="() => showPicker = false"
+      v-outside="closeCalendar"
       is-range
       :date="date"
       @date-handler="v => date = v"
@@ -25,10 +25,18 @@ import Calendar from '../src/Index.vue'
 
 export default {
   components: { Calendar },
+
   data () {
     return {
       date: '20/04/2018',
       showPicker: false
+    }
+  },
+
+  methods: {
+    closeCalendar () {
+      console.log('coe')
+      this.showPicker = false
     }
   }
 }

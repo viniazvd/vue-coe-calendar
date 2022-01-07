@@ -4,7 +4,7 @@
       class="DatePicker__input"
       type="text"
       v-model="date"
-      @click="showPicker = true"
+      @click.stop="showPicker = true"
     >
 
     <calendar
