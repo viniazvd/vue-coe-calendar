@@ -9,7 +9,7 @@ module.exports = {
   format: [ 'es', 'cjs', 'umd' ],
   plugins: [
     vue({
-      css: false,
+      // css: false,
       // style: {
       //   trim: false,
       //   postcssPlugins: [
