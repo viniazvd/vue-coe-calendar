@@ -1,7 +1,7 @@
 'use strict'
 
-const vue = require('rollup-plugin-vue').default
-const autoprefixer = require('autoprefixer')
+const vue = require('rollup-plugin-vue')
+// const autoprefixer = require('autoprefixer')
 
 module.exports = {
   js: 'buble',
@@ -10,12 +10,12 @@ module.exports = {
   plugins: [
     vue({
       css: false,
-      style: {
-        trim: false,
-        postcssPlugins: [
-          autoprefixer({ browsers: [ '> 0.000001%' ] })
-        ]
-      }
+      // style: {
+      //   trim: false,
+      //   postcssPlugins: [
+      //     autoprefixer({ browsers: [ '> 0.000001%' ] })
+      //   ]
+      // }
     })
   ]
 }
