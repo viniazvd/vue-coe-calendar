@@ -1,6 +1,6 @@
 {
   "name": "vue-coe-calendar",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "license": "MIT",
   "cdn": "dist/vue-coe-calendar.js",
   "main": "dist/vue-coe-calendar.cjs.js",
