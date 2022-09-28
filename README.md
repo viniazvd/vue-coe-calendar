@@ -21,7 +21,7 @@
 **Use**
 ```vue
 <template>
-  <calendar :date="date" @date-handler="v => date = v" />
+  <calendar v-model="date" />
 </template>
 
 <script>
@@ -43,14 +43,14 @@ export default {
 
 Name                |   type               | required  | About
 -----               | -------------------- | --------- | ------
-date                |  `(String, Object)`  |  `true`   | 
-isRange             |  Boolean             | `false`   | 
+value                |  `(String, Object)`  |  `true`   |
+isRange             |  Boolean             | `false`   |
 
 ## Events
 
 Name          | About
 -----         | -----
-date-handler  | 
+input  |
 
 ## Contribution
 - @VitorLuizC

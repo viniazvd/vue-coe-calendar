@@ -9,14 +9,16 @@
       ref="container"
       @click="setDateHandler"
     >
-      <coe-reset @reset-date="resetDate" />
+      <coe-reset v-if="hasReset" @reset-date="resetDate" />
 
       <coe-header
-        :month="month"
         :year="year"
+        :month="month"
+        :is-range="isRange"
+
         @show-months="showMonths = !showMonths"
         @show-years="showYears = !showYears"
-        @date-handler="dateHandler"
+        @input="dateHandler"
       />
 
       <coe-week />
@@ -31,9 +33,11 @@
         @set:over-day="setOverDay"
       />
 
-      <button class="apply" @click="apply">
-        <span class="text">APLICAR</span>
-      </button>
+      <div class="apply-container">
+        <button class="apply-btn" @click="apply">
+          <span class="text">APLICAR</span>
+        </button>
+      </div>
     </div>
 
     <coe-selections
@@ -72,8 +76,11 @@ export default {
   components: { CoeReset, CoeHeader, CoeWeek, CoeDay, CoeSelections },
 
   props: {
+    hasReset: Boolean,
+
     isRange: Boolean,
-    input: {
+
+    value: {
       type: [String, Object],
       default: ''
     }
@@ -94,7 +101,7 @@ export default {
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' }
 
     const currentDate = date.toLocaleDateString('pt-BR', options)
-    const inputDate = isValid(this.input) && this.input
+    const inputDate = isValid(this.value) && this.value
 
     const day = +getDay(inputDate || currentDate)
     const month = +getMonth(inputDate || currentDate)
@@ -116,7 +123,7 @@ export default {
   },
 
   watch: {
-    input: {
+    value: {
       handler (d) {
         if (!isValid(d)) return
 
@@ -193,11 +200,11 @@ export default {
             end: { ...this.date.end, formatted: getFormattedDate(this.date.end) }
           }
 
-          this.$emit('date-handler', date)
+          this.$emit('input', date)
         }
 
         else {
-          this.$emit('date-handler', { ...this.date, formatted: getFormattedDate(this.date) })
+          this.$emit('input', { ...this.date, formatted: getFormattedDate(this.date) })
         }
 
         this.$emit('apply')
@@ -207,7 +214,7 @@ export default {
     resetDate () {
       this.date = {}
 
-      this.$emit('date-handler', '')
+      this.$emit('input', '')
     }
   }
 }
@@ -229,22 +236,32 @@ export default {
     align-items: center;
     outline: none;
 
-    & > .apply {
+    & > .apply-container {
       width: 100%;
       display: flex;
       justify-content: center;
 
-      height: 40px;
-      background: linear-gradient(135deg, #BC4CF7 0%, #7873EE 100%);
+      & > .apply-btn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-      & > .text {
-        color: #FFFFFF;
-        font-family: Nunito, Arial;
-        font-size: 11px;
-        font-weight: 500;
-        line-height: 14px;
-        text-align: center;
-        text-shadow: 0 1px 2px 0 rgba(black, .2);
+        height: 40px;
+        cursor: pointer;
+        border-radius: 8px;
+        margin: 15px 25px 25px;
+        background: linear-gradient(135deg, #BC4CF7 0%, #7873EE 100%);
+
+        & > .text {
+          color: #FFFFFF;
+          font-family: Nunito, Arial;
+          font-size: 11px;
+          font-weight: 500;
+          line-height: 14px;
+          text-align: center;
+          text-shadow: 0 1px 2px 0 rgba(black, .2);
+        }
       }
     }
 

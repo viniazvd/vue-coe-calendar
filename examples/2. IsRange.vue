@@ -11,8 +11,7 @@
       v-if="showPicker"
       v-outside="closeCalendar"
       is-range
-      :date="date"
-      @date-handler="v => date = v"
+      v-model="date"
       @apply="() => showPicker = false"
     />
 

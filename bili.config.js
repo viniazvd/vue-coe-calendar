@@ -9,13 +9,13 @@ module.exports = {
   format: [ 'es', 'cjs', 'umd' ],
   plugins: [
     vue({
-      // css: false,
-      // style: {
-      //   trim: false,
-      //   postcssPlugins: [
-      //     autoprefixer({ browsers: [ '> 0.000001%' ] })
-      //   ]
-      // }
+      css: true,
+      style: {
+        trim: false,
+        // postcssPlugins: [
+        //   autoprefixer({ browsers: [ '> 0.000001%' ] })
+        // ]
+      }
     })
   ]
 }

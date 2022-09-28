@@ -14,6 +14,7 @@
 .week-container {
   display: grid;
   grid-column-gap: 10px;
+  justify-content: center;
   grid-template-columns: repeat(7, 30px);
 
   & > .week {

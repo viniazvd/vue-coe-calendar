@@ -40,4 +40,4 @@ const mapToPieces = (value) => {
   }
 }
 
-export default (value) => value.length === 10 && isDatePattern(value) && comparePiecesToDate(mapToPieces(value))
+export default (value) => value && value.length === 10 && isDatePattern(value) && comparePiecesToDate(mapToPieces(value))

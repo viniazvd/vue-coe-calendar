@@ -12,8 +12,7 @@
       v-outside="() => showPicker = false"
       is-range
       show-disabled-days
-      :date="date"
-      @date-handler="v => date = v"
+      v-model="date"
       @apply="() => showPicker = false"
     />
 
